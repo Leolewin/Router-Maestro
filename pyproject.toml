@@ -1,6 +1,6 @@
 [project]
 name = "router-maestro"
-version = "0.9.3"
+version = "0.9.4"
 description = "Multi-model routing and load balancing system with OpenAI-compatible API"
 readme = "README.md"
 license = "MIT"
@@ -45,6 +45,9 @@ dependencies = [
 
     # TOML writing (for Codex config generation)
     "tomlkit>=0.12.0",
+
+    # Round-trip YAML writing (for DSH config generation)
+    "ruamel.yaml>=0.18.0",
 
     # Fuzzy matching
     "rapidfuzz>=3.0.0",

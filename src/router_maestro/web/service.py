@@ -32,10 +32,11 @@ from router_maestro.cli.client_configs.base import (
     _model_key,
 )
 from router_maestro.cli.client_configs.claude_code import _catalog_has_claude_model
+from router_maestro.cli.client_configs.dsh import redact_dsh_settings
 from router_maestro.config import PROJECTS_FILE, ContextConfig, ContextsConfig, load_contexts_config
 from router_maestro.config.settings import write_json_owner_only
 
-PortalClient = Literal["claude-code", "codex", "gemini"]
+PortalClient = Literal["claude-code", "codex", "gemini", "dsh"]
 PortalLevel = Literal["user", "project"]
 
 _CLAUDE_ROLE_SLOTS = ("fable", "opus", "sonnet", "haiku", "subagent")
@@ -658,6 +659,7 @@ class PortalService:
             "claude-code": self.home / ".claude" / "settings.json",
             "codex": self.home / ".codex" / "config.toml",
             "gemini": self.home / ".gemini" / ".env",
+            "dsh": self.home / ".dsh" / "settings.yaml",
         }
         project_paths = {
             "claude-code": Path(".claude/settings.json"),
@@ -666,6 +668,8 @@ class PortalService:
         }
         if request.level == "user":
             return user_paths[request.client]
+        if request.client == "dsh":
+            raise PortalServiceError(400, "DSH supports user-level configuration only")
         return self._validate_project(request.project_path) / project_paths[request.client]
 
     def _validate_codex_project_context(self, context: ContextConfig) -> None:
@@ -788,6 +792,7 @@ class PortalService:
             extras={
                 "preview_only": preview_only,
                 "target_path": str(target_path),
+                "source_path": str(target_path),
                 "update_model_catalog": request.update_model_catalog,
                 "model_catalog_path": str(self.home / ".codex" / "router-maestro-models.json"),
             },
@@ -798,7 +803,7 @@ class PortalService:
             selection.slot: client.resolve_model_selection(selection, id_style)
             for selection in selections
         }
-        if request.client == "codex":
+        if request.client in {"codex", "dsh"}:
             setattr(client, "_available_models", raw_models)
         return client, model_strings, generation
 
@@ -820,6 +825,8 @@ class PortalService:
                     line = "GEMINI_API_KEY=********"
                 lines.append(line)
             return "\n".join(lines) + ("\n" if content.endswith("\n") else "")
+        if client == "dsh":
+            return redact_dsh_settings(content)
         return content
 
     def _preview_sync(
@@ -900,6 +907,9 @@ class PortalService:
         target = self._target_path(request)
         raw_models = await self._load_raw_models(
             request.context,
-            force_refresh=request.client == "codex" and request.update_model_catalog,
+            force_refresh=(
+                (request.client == "codex" and request.update_model_catalog)
+                or request.client == "dsh"
+            ),
         )
         return await asyncio.to_thread(self._apply_sync, request, raw_models, target)

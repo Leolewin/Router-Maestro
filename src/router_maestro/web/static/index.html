@@ -556,6 +556,14 @@
       text-shadow: 0 0 10px rgba(37, 217, 255, 0.7);
     }
 
+    .rm-tab:disabled {
+      color: rgba(96, 168, 185, 0.45);
+      cursor: not-allowed;
+      background: rgba(37, 217, 255, 0.02);
+      box-shadow: none;
+      text-shadow: none;
+    }
+
     .rm-target {
       margin: 12px;
       padding: 10px;
@@ -1074,6 +1082,7 @@
                   <option value="claude-code">Claude Code</option>
                   <option value="codex">OpenAI Codex</option>
                   <option value="gemini">Gemini CLI</option>
+                  <option value="dsh">DeepSeek Harness</option>
                 </select>
               </label>
               <label>
@@ -1096,7 +1105,7 @@
                 <label class="rm-field-wide"><span class="rm-label">Subagent</span><select data-role="subagent"></select><span class="rm-choice-meta" data-role-meta="subagent"></span></label>
               </div>
 
-              <div class="rm-prefix">
+              <div class="rm-prefix" id="rm-prefix-setting">
                 <div>
                   <span class="rm-label">Final Step</span>
                   Retain provider prefix in generated model IDs
@@ -1215,6 +1224,7 @@
       var roleGrid = document.getElementById("rm-role-grid");
       var prefixToggle = document.getElementById("rm-prefix-toggle");
       var prefixState = document.getElementById("rm-prefix-state");
+      var prefixSetting = document.getElementById("rm-prefix-setting");
       var catalogUpdate = document.getElementById("rm-catalog-update");
       var catalogToggle = document.getElementById("rm-catalog-toggle");
       var catalogState = document.getElementById("rm-catalog-state");
@@ -1861,7 +1871,8 @@
         var targets = {
           "claude-code": "~/.claude/settings.json",
           codex: "~/.codex/config.toml",
-          gemini: "~/.gemini/.env"
+          gemini: "~/.gemini/.env",
+          dsh: "~/.dsh/settings.yaml"
         };
         return targets[client];
       }
@@ -1890,8 +1901,19 @@
       function updateClientFields() {
         var isClaude = clientSelect.value === "claude-code";
         var isCodex = clientSelect.value === "codex";
+        var isDsh = clientSelect.value === "dsh";
+        var projectTab = document.querySelector('.rm-tab[data-scope="project"]');
+        projectTab.disabled = isDsh;
+        projectTab.title = isDsh ? "DSH does not load project-level settings" : "";
+        if (isDsh && state.scope === "project") {
+          state.scope = "user";
+          document.querySelectorAll(".rm-tab").forEach(function (item) {
+            item.setAttribute("aria-selected", String(item.dataset.scope === "user"));
+          });
+        }
         roleGrid.hidden = !(isClaude && state.requiresClaudeRoles);
         catalogUpdate.hidden = !isCodex;
+        prefixSetting.hidden = isDsh;
         renderContextWindows();
         updateTargetPlaceholder();
       }
@@ -1911,7 +1933,7 @@
           main_model: state.selectedModel.key,
           context_window: requestedContextWindow(),
           role_models: roles,
-          keep_provider_prefix: prefixToggle.checked,
+          keep_provider_prefix: clientSelect.value === "dsh" ? true : prefixToggle.checked,
           update_model_catalog: catalogToggle.checked
         };
       }

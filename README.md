@@ -19,7 +19,7 @@ the same catalog through its native API surface.
 
 - **One Copilot subscription, every compatible client.** Authenticate once with
   GitHub Copilot and expose its live catalog—including GPT, Claude, Gemini,
-  Grok, and MAI—to Claude Code, Codex, Gemini CLI, and API clients.
+  Grok, and MAI—to Claude Code, Codex, Gemini CLI, DeepSeek Harness, and API clients.
 - **Protocol-independent routing.** Anthropic Messages, OpenAI Chat
   Completions, OpenAI Responses, and Gemini generation enter one dispatcher;
   providers choose the best Messages, Chat, or Responses upstream transport.
@@ -50,6 +50,7 @@ the same catalog through its native API surface.
 | --- | --- | --- |
 | Claude Code / Anthropic SDK | Anthropic Messages | Yes, including Responses-only GPT models |
 | OpenAI Codex / OpenAI SDK | OpenAI Responses | Yes, including Claude, Gemini, Grok, and MAI |
+| DeepSeek Harness (DSH) | OpenAI Responses | Yes, with generated context and reasoning metadata |
 | OpenAI-compatible clients | Chat Completions | Yes, subject to feature representability |
 | Gemini CLI / Gemini SDK | Gemini `generateContent` | Yes, across available upstream transports |
 
@@ -117,12 +118,15 @@ Or configure a client from the terminal:
 router-maestro config claude-code
 router-maestro config codex
 router-maestro config gemini
+router-maestro config dsh
 ```
 
 The wizard reads the active server's live model catalog, lets you choose the
 model and context window, and previews or backs up the target configuration.
 For Codex it can also refresh `router-maestro-models.json`, so custom model
-metadata is available when the next Codex session starts.
+metadata is available when the next Codex session starts. DSH configuration
+updates its Router-Maestro provider catalog in `~/.dsh/settings.yaml` while
+preserving unrelated Harness settings.
 
 Verify the server and catalog:
 

@@ -1,6 +1,6 @@
 """Shared foundation for per-client config generation.
 
-Each external client (Claude Code, Codex, Gemini CLI) subclasses
+Each external client (Claude Code, Codex, Gemini CLI, DSH) subclasses
 :class:`ClientConfig` and owns its *entire* generation flow via the template
 method :meth:`ClientConfig.generate`. This module holds the pieces every client
 shares: model fetch/display/selection, the backup prompt, the level picker, the

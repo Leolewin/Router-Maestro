@@ -68,6 +68,12 @@ def gemini_cli_config(id_style: Annotated[IdStyle | None, _ID_STYLE_OPT] = None)
     get_client("gemini")().generate(id_style=id_style)
 
 
+@app.command(name="dsh")
+def dsh_config(id_style: Annotated[IdStyle | None, _ID_STYLE_OPT] = None) -> None:
+    """Generate DeepSeek Harness settings.yaml for router-maestro."""
+    get_client("dsh")().generate(id_style=id_style)
+
+
 # --- back-compat re-exports -------------------------------------------------
 # Keep the private helpers that tests/external callers import from this module
 # resolvable after the split into ``client_configs``. ``Prompt``/``Confirm``/
@@ -112,5 +118,6 @@ __all__ = [
     "codex_config",
     "config_callback",
     "console",
+    "dsh_config",
     "gemini_cli_config",
 ]
