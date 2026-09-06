@@ -269,6 +269,9 @@ def _catalog_display_name(model: dict[str, Any], slug: str) -> str:
     if not isinstance(raw_name, str) or not raw_name.strip():
         return slug
     display_name = _INTERNAL_ONLY_DISPLAY_SUFFIX.sub("", raw_name).strip()
+    # Keep RM labels distinct from Codex's bundled GPT-name formatting.
+    if display_name.startswith("GPT-"):
+        display_name = "GPT " + display_name.removeprefix("GPT-")
     return display_name or slug
 
 

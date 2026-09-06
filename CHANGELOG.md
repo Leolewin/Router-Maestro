@@ -4,6 +4,16 @@ All notable changes to Router-Maestro are documented here.
 
 ---
 
+## v0.9.3 (2026-09-06)
+
+### Fixed
+
+- **Router-Maestro GPT labels stay distinct in Codex.** Generated model catalogs replace
+  the leading `GPT-` in Router-Maestro display names with `GPT `, for example
+  `GPT-5.6 Sol` becomes `GPT 5.6 Sol`, so Codex retains the GPT prefix instead of applying
+  its bundled-model label formatting. Generated descriptions use the same label; bundled
+  models, model IDs, provider source metadata, and remaining hyphens stay unchanged.
+
 ## v0.9.2 (2026-09-05)
 
 ### Fixed
