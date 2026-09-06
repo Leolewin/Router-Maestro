@@ -127,15 +127,16 @@ Run one of the interactive wizards:
 router-maestro config claude-code
 router-maestro config codex
 router-maestro config gemini
+router-maestro config dsh
 ```
 
 Or run `router-maestro config` to choose the client interactively. Each wizard:
 
-- chooses user or project scope;
+- chooses a supported scope (DSH is user-only; the other clients support user or project);
 - offers to back up an existing target file;
 - fetches the active server's current model catalog;
 - selects a model and relevant context window;
-- asks whether to keep the provider-qualified model ID; and
+- asks whether to keep the provider-qualified model ID when the client supports both forms; and
 - preserves unrelated configuration fields where the client format permits it.
 
 The optional `--id-style` flag makes model-ID spelling non-interactive:
@@ -198,6 +199,17 @@ Each configuration run can refresh
 **Yes** unless a deliberately pinned catalog is required. Codex reads
 `model_catalog_json` at startup, so open a new session after an update.
 
+Generated catalog entries keep Codex's two window fields distinct:
+
+- `context_window` is the upstream model's maximum prompt/input budget;
+- `max_context_window` is its combined prompt + output capacity.
+
+For example, a 1.05M GPT model with a 128K output allowance is written as
+`context_window: 922000` and `max_context_window: 1050000`. User-level
+configuration removes stale global `model_context_window` and
+`model_auto_compact_token_limit` overrides so they cannot mask per-model
+catalog values. Project-level overrides are left untouched.
+
 Generated Router-Maestro GPT display names use a space after `GPT` instead of a
 hyphen, for example `GPT 5.6 Sol`. This keeps their GPT prefix visible and
 distinguishes them from Codex's bundled GPT labels. Model IDs and bundled model
@@ -246,6 +258,24 @@ Before 1.0.0, migrate any manually maintained client configuration as follows:
 Current CLI and Web configuration already generate stable paths. Gemini's
 `/api/gemini/v1beta` remains because `v1beta` is the Gemini API version.
 
+### DeepSeek Harness (DSH)
+
+DSH configuration targets only `~/.dsh/settings.yaml`; DSH does not currently
+load a project-level settings file. The CLI and Web Portal preserve unrelated
+top-level settings and replace only:
+
+- `llm-pi-ai.providers.router-maestro`, containing the current context's full
+  model catalog; and
+- `agent-default-model`, containing the selected Router-Maestro model.
+
+The generated provider uses `api: openai-responses`, the stable
+`<context endpoint>/api/openai/v1` base URL, and resolves its key through
+`ROUTER_MAESTRO_API_KEY`. Model IDs stay provider-qualified to avoid collisions.
+DSH defines `contextWindow` as the combined request + response capacity, so a
+GPT model with a 922K prompt budget and 128K output allowance is written as
+`contextWindow: 1050000`. Router-Maestro does not set DSH `maxTokens`, because
+that field would also become the default output limit on requests.
+
 ## Configure with the Local Web Portal
 
 Start the portal on the client machine:
@@ -268,6 +298,7 @@ The portal can:
 - load the selected context's authenticated model catalog;
 - show model provider, context windows, and transport capability summary;
 - configure Claude Code, Codex, or Gemini CLI at user or project scope;
+- configure DSH at its supported user scope;
 - discover project roots from client trust stores and explicit additions;
 - preview changes without writing;
 - back up an existing configuration before Apply;
@@ -461,7 +492,7 @@ in the placeholders, then give the prompt to the agent from the machine where
 the client runs.
 
 ```text
-Configure Router-Maestro for <claude-code|codex|gemini> at <user|project>
+Configure Router-Maestro for <claude-code|codex|gemini|dsh> at <user|project>
 scope using context <context-name>. Work in <project-path> when project scope is
 requested.
 

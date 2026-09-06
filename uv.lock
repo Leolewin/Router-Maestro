@@ -574,7 +574,7 @@ wheels = [
 
 [[package]]
 name = "router-maestro"
-version = "0.9.3"
+version = "0.9.4"
 source = { editable = "." }
 dependencies = [
     { name = "cryptography" },
@@ -586,6 +586,7 @@ dependencies = [
     { name = "questionary" },
     { name = "rapidfuzz" },
     { name = "rich" },
+    { name = "ruamel-yaml" },
     { name = "tiktoken" },
     { name = "tomlkit" },
     { name = "typer" },
@@ -612,6 +613,7 @@ requires-dist = [
     { name = "questionary", specifier = ">=2.1.0" },
     { name = "rapidfuzz", specifier = ">=3.0.0" },
     { name = "rich", specifier = ">=13.7.0" },
+    { name = "ruamel-yaml", specifier = ">=0.18.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.1.0" },
     { name = "tiktoken", specifier = ">=0.5.0" },
     { name = "tomlkit", specifier = ">=0.12.0" },
@@ -619,6 +621,15 @@ requires-dist = [
     { name = "uvicorn", specifier = ">=0.27.0" },
 ]
 provides-extras = ["dev"]
+
+[[package]]
+name = "ruamel-yaml"
+version = "0.19.1"
+source = { registry = "https://packagefeedproxy.microsoft.io/pypi/simple/" }
+sdist = { url = "https://ms-feed-25.pkgs.visualstudio.com/6f084628-a36d-42cb-934d-057357e379dc/_packaging/49d7402f-07bb-4b18-a9ce-086e6e98a554/pypi/download/ruamel-yaml/0.19.1/ruamel_yaml-0.19.1.tar.gz", hash = "sha256:53eb66cd27849eff968ebf8f0bf61f46cdac2da1d1f3576dd4ccee9b25c31993" }
+wheels = [
+    { url = "https://ms-feed-25.pkgs.visualstudio.com/6f084628-a36d-42cb-934d-057357e379dc/_packaging/49d7402f-07bb-4b18-a9ce-086e6e98a554/pypi/download/ruamel-yaml/0.19.1/ruamel_yaml-0.19.1-py3-none-any.whl", hash = "sha256:27592957fedf6e0b62f281e96effd28043345e0e66001f97683aa9a40c667c93" },
+]
 
 [[package]]
 name = "ruff"

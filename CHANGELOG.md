@@ -4,6 +4,26 @@ All notable changes to Router-Maestro are documented here.
 
 ---
 
+## v0.9.4 (2026-09-07)
+
+### Added
+
+- **DeepSeek Harness configuration is available in the CLI and Web Portal.**
+  `router-maestro config dsh` and the local portal generate the
+  `llm-pi-ai.providers.router-maestro` catalog plus `agent-default-model` in
+  `~/.dsh/settings.yaml`. Existing unrelated settings and comments are preserved,
+  model IDs remain provider-qualified, and DSH project scope is rejected because
+  Harness does not load a project-level settings file.
+
+### Fixed
+
+- **Generated client catalogs use each client's real context-window semantics.**
+  Codex catalog `context_window` now carries the largest upstream prompt budget while
+  `max_context_window` carries the combined prompt + output window; stale user-level
+  global context and compact overrides are removed so they cannot mask those per-model
+  values. DSH `contextWindow` uses the combined total and does not set a request
+  `maxTokens` default.
+
 ## v0.9.3 (2026-09-06)
 
 ### Fixed

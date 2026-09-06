@@ -22,7 +22,6 @@ from router_maestro.cli.client_configs.base import (
     _bare_upstream_model_id,
     _model_key,
     _model_operation_support,
-    _upstream_context_window,
     console,
 )
 from router_maestro.cli.client_configs.model_id import (
@@ -173,36 +172,47 @@ def _load_bundled_codex_catalog() -> dict[str, Any] | None:
 
 
 def _catalog_context_windows(model: dict[str, Any]) -> tuple[int | None, int | None]:
-    """Return the default and maximum total context windows for Codex metadata."""
+    """Return the maximum prompt and total windows for Codex metadata.
+
+    Codex treats ``context_window`` as the request/prompt budget and
+    ``max_context_window`` as the provider's combined request + response
+    capacity.  Copilot's default billing tier is not the model's physical
+    prompt limit, so using the ``is_default`` option here makes long-context
+    models look artificially small (for example 272K instead of 922K).
+    """
     max_output = model.get("max_output_tokens")
     output_tokens = (
         max_output
         if isinstance(max_output, int) and not isinstance(max_output, bool) and max_output > 0
         else 0
     )
-    default_prompt = None
+    prompt_candidates: list[int] = []
+    max_prompt = model.get("max_prompt_tokens")
+    if isinstance(max_prompt, int) and not isinstance(max_prompt, bool) and max_prompt > 0:
+        prompt_candidates.append(max_prompt)
     options = model.get("context_window_options")
     if isinstance(options, list):
         for option in options:
-            if not isinstance(option, dict) or option.get("is_default") is not True:
+            if not isinstance(option, dict):
                 continue
             value = option.get("max_prompt_tokens")
             if isinstance(value, int) and not isinstance(value, bool) and value > 0:
-                default_prompt = value
-                break
+                prompt_candidates.append(value)
 
-    default_window = default_prompt + output_tokens if default_prompt is not None else None
+    prompt_window = max(prompt_candidates) if prompt_candidates else None
     maximum = model.get("max_context_window_tokens")
-    max_window = (
-        maximum
-        if isinstance(maximum, int) and not isinstance(maximum, bool) and maximum > 0
-        else _upstream_context_window(model)
-    )
-    if default_window is None:
-        default_window = max_window
-    if max_window is not None and default_window is not None:
-        default_window = min(default_window, max_window)
-    return default_window, max_window
+    if isinstance(maximum, int) and not isinstance(maximum, bool) and maximum > 0:
+        max_window = maximum
+    elif prompt_window is not None:
+        max_window = prompt_window + output_tokens
+    else:
+        max_window = None
+
+    if prompt_window is None and max_window is not None:
+        prompt_window = max(1, max_window - output_tokens) if output_tokens else max_window
+    if max_window is not None and prompt_window is not None:
+        prompt_window = min(prompt_window, max_window)
+    return prompt_window, max_window
 
 
 def _apply_server_model_capabilities(
@@ -419,6 +429,13 @@ class CodexConfig(ClientConfig):
         ctx.extras.pop("model_catalog_error", None)
 
         if level == "user":
+            # The generated catalog owns per-model prompt and compaction
+            # metadata.  Old global overrides mask those values for every
+            # model, so remove only the user-level keys managed by this
+            # configuration flow.  Project-local hand-written overrides stay
+            # untouched because they may be intentional for that project.
+            existing_config.pop("model_context_window", None)
+            existing_config.pop("model_auto_compact_token_limit", None)
             existing_config["model_provider"] = "router-maestro"
             providers = existing_config.get("model_providers")
             if providers is None:

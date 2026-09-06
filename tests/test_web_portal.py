@@ -599,6 +599,103 @@ async def test_codex_project_mismatch_explains_model_override_boundary(tmp_path:
     assert "context 'jp'" in error.value.detail
 
 
+@pytest.mark.asyncio
+async def test_dsh_preview_preserves_existing_settings_and_uses_total_context(
+    tmp_path: Path,
+) -> None:
+    service = _service(tmp_path)
+    target = service.home / ".dsh" / "settings.yaml"
+    target.parent.mkdir(parents=True)
+    target.write_text(
+        "# retained\n"
+        "permission:\n"
+        "  defaultPreset: danger-full-access\n"
+        "llm-pi-ai:\n"
+        "  providers:\n"
+        "    private-provider:\n"
+        "      apiKey: sk-private-inline\n"
+        "      headers:\n"
+        "        Authorization: Bearer private-header\n",
+        encoding="utf-8",
+    )
+    request = PortalConfigRequest(
+        context="hk",
+        client="dsh",
+        main_model="github-copilot/gpt-5.6-sol",
+        keep_provider_prefix=False,
+    )
+
+    result = await service.preview_config(request)
+
+    assert result.target_path == str(target)
+    assert target.read_text(encoding="utf-8").startswith("# retained\n")
+    assert "# retained" in result.content
+    assert "defaultPreset: danger-full-access" in result.content
+    assert "api: openai-responses" in result.content
+    assert "baseURL: https://router.example/api/openai/v1" in result.content
+    assert "apiKeyEnv: ROUTER_MAESTRO_API_KEY" in result.content
+    assert "sk-private-inline" not in result.content
+    assert "private-header" not in result.content
+    assert result.content.count("********") == 2
+    # DSH always keeps provider-qualified routes even when the generic portal
+    # switch is false.
+    assert "model: github-copilot/gpt-5.6-sol" in result.content
+
+
+@pytest.mark.asyncio
+async def test_dsh_apply_generates_full_catalog_with_combined_context_windows(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    service = _service(tmp_path)
+    catalog = _catalog()
+    catalog["models"][0].update(
+        {
+            "max_prompt_tokens": 922_000,
+            "max_output_tokens": 128_000,
+            "max_context_window_tokens": 1_050_000,
+            "feature_capabilities": {"vision": True},
+            "reasoning_effort_values": ["low", "medium", "high", "max"],
+        }
+    )
+
+    async def load_models(*args, **kwargs):
+        del args, kwargs
+        return catalog["models"]
+
+    monkeypatch.setattr(service, "_load_raw_models", load_models)
+    request = PortalConfigRequest(
+        context="hk",
+        client="dsh",
+        main_model="github-copilot/gpt-5.6-sol",
+    )
+
+    result = await service.apply_config(request)
+
+    assert result.backup_path is None
+    assert "contextWindow: 1050000" in result.content
+    assert "- image" in result.content
+    assert (service.home / ".dsh" / "settings.yaml").exists()
+
+
+@pytest.mark.asyncio
+async def test_dsh_project_scope_is_rejected(tmp_path: Path) -> None:
+    service = _service(tmp_path)
+    project = tmp_path / "project"
+    project.mkdir()
+    service.add_project(str(project))
+    request = PortalConfigRequest(
+        context="hk",
+        client="dsh",
+        level="project",
+        project_path=str(project),
+        main_model="github-copilot/gpt-5.6-sol",
+    )
+
+    with pytest.raises(PortalServiceError, match="user-level"):
+        await service.preview_config(request)
+
+
 def test_portal_app_serves_ui_and_sensitive_key_only_on_explicit_route(tmp_path: Path) -> None:
     app = create_portal_app(_service(tmp_path))
 
@@ -612,6 +709,8 @@ def test_portal_app_serves_ui_and_sensitive_key_only_on_explicit_route(tmp_path:
     assert page.status_code == 200
     assert "ROUTER-MAESTRO" in page.text
     assert "Codex Catalog" in page.text
+    assert '<option value="dsh">DeepSeek Harness</option>' in page.text
+    assert 'dsh: "~/.dsh/settings.yaml"' in page.text
     assert "SAVE AUTO PROFILE" in page.text
     assert "Task routing and fallback settings" in page.text
     assert "Exclude unknown models" in page.text

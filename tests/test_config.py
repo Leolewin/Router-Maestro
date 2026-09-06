@@ -907,7 +907,7 @@ class TestCodexConfig:
         assert catalog is not None
         entry = next(item for item in catalog["models"] if item["slug"].endswith("grok-4.6"))
         assert entry["base_instructions"] == "version-aligned bundled instructions"
-        assert entry["context_window"] == 328_000
+        assert entry["context_window"] == 372_000
         assert entry["max_context_window"] == 500_000
         assert entry["supports_search_tool"] is False
         assert entry["shell_type"] == "default"
@@ -922,6 +922,48 @@ class TestCodexConfig:
             "high",
             "xhigh",
         ]
+
+    @pytest.mark.parametrize(
+        ("model_id", "prompt", "total"),
+        [
+            ("gpt-6-astra", 872_000, 1_000_000),
+            ("gpt-5.6-sol-fast", 922_000, 1_050_000),
+            ("router-maestro", 922_000, 1_050_000),
+        ],
+    )
+    def test_generated_catalog_keeps_prompt_and_total_window_semantics(
+        self,
+        monkeypatch,
+        model_id,
+        prompt,
+        total,
+    ):
+        monkeypatch.setattr(
+            cc_codex,
+            "_load_bundled_codex_catalog",
+            lambda: _stub_bundled_codex_catalog(),
+        )
+        model = {
+            "provider": "router-maestro" if model_id == "router-maestro" else "github-copilot",
+            "id": model_id,
+            "name": model_id,
+            "virtual": model_id == "router-maestro",
+            "max_prompt_tokens": prompt,
+            "max_output_tokens": 128_000,
+            "max_context_window_tokens": total,
+            "context_window_options": [
+                {"tier": "default", "max_prompt_tokens": 272_000, "is_default": True},
+                {"tier": "long_context", "max_prompt_tokens": prompt, "is_default": False},
+            ],
+        }
+
+        catalog = cc_codex._build_codex_model_catalog([model])
+
+        assert catalog is not None
+        slug = model_id if model_id == "router-maestro" else f"github-copilot/{model_id}"
+        entry = next(item for item in catalog["models"] if item["slug"] == slug)
+        assert entry["context_window"] == prompt
+        assert entry["max_context_window"] == total
 
     def test_generated_catalog_strips_internal_only_display_suffix(self, monkeypatch):
         monkeypatch.setattr(
@@ -1143,6 +1185,30 @@ class TestCodexConfig:
         provider = data["model_providers"]["router-maestro"]
         assert provider["base_url"] == "http://localhost:8080/api/openai/v1"
 
+    def test_user_level_removes_stale_global_context_overrides(self, tmp_path, monkeypatch):
+        home, _ = _setup_codex_env(
+            monkeypatch,
+            tmp_path,
+            level_choice="1",
+            update_catalog=False,
+        )
+        config_path = home / ".codex" / "config.toml"
+        config_path.parent.mkdir(parents=True, exist_ok=True)
+        config_path.write_text(
+            "model_context_window = 400000\n"
+            "model_auto_compact_token_limit = 380000\n"
+            'unrelated = "keep"\n',
+            encoding="utf-8",
+        )
+
+        cli_config.codex_config(id_style=IdStyle.QUALIFIED)
+
+        with open(config_path, "rb") as file:
+            data = tomllib.load(file)
+        assert "model_context_window" not in data
+        assert "model_auto_compact_token_limit" not in data
+        assert data["unrelated"] == "keep"
+
     def test_qualified_server_model_writes_single_provider_prefix(self, tmp_path, monkeypatch):
         home, _ = _setup_codex_env(monkeypatch, tmp_path, level_choice="1")
         monkeypatch.setattr(
@@ -1193,6 +1259,7 @@ class TestCodexConfig:
         stale["model_providers"] = providers
         # Unrelated key the user might have hand-added — must survive untouched.
         stale["model_context_window"] = 400000
+        stale["model_auto_compact_token_limit"] = 380000
         with open(project_path, "w", encoding="utf-8") as f:
             f.write(tomlkit.dumps(stale))
 
@@ -1204,6 +1271,7 @@ class TestCodexConfig:
         assert "model_provider" not in data
         assert "model_providers" not in data
         assert data["model_context_window"] == 400000
+        assert data["model_auto_compact_token_limit"] == 380000
         assert data["model_catalog_json"].endswith("/.codex/router-maestro-models.json")
 
     def test_project_level_preserves_other_model_providers(self, tmp_path, monkeypatch):
