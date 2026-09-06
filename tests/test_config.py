@@ -865,6 +865,11 @@ class TestCodexConfig:
             "github-copilot/gpt-5.5",
             "github-copilot/claude-opus-4.6",
         }
+        assert {model["slug"]: model["display_name"] for model in catalog["models"]} == {
+            "gpt-5.6-terra": "GPT-5.6-Terra",
+            "github-copilot/gpt-5.5": "GPT 5.5",
+            "github-copilot/claude-opus-4.6": "Claude Opus 4.6",
+        }
         provider = data["model_providers"]["router-maestro"]
         assert provider == {
             "name": "Router Maestro",
@@ -936,9 +941,52 @@ class TestCodexConfig:
         entry = next(
             item for item in catalog["models"] if item["slug"] == "github-copilot/gpt-5.6-sol-fast"
         )
-        assert entry["display_name"] == "GPT-5.6 Sol Fast"
-        assert entry["description"] == "GPT-5.6 Sol Fast via Router-Maestro"
+        assert entry["display_name"] == "GPT 5.6 Sol Fast"
+        assert entry["description"] == "GPT 5.6 Sol Fast via Router-Maestro"
         assert model["name"] == "GPT-5.6 Sol Fast (Internal only)"
+
+    @pytest.mark.parametrize(
+        ("provider", "model_id", "name", "expected"),
+        [
+            ("github-copilot", "gpt-5.6-terra", "GPT-5.6-Terra", "GPT 5.6-Terra"),
+            ("github-copilot", "gpt-5.3-codex", "GPT-5.3-Codex", "GPT 5.3-Codex"),
+            ("github-copilot", "gpt-5-mini", "GPT-5 mini", "GPT 5 mini"),
+            ("openai", "gpt-5.5", "GPT-5.5", "GPT 5.5"),
+            ("github-copilot", "gpt-6-astra", "GPT 6 Astra", "GPT 6 Astra"),
+            ("github-copilot", "gpt-5.5", "Custom GPT-5.5", "Custom GPT-5.5"),
+            ("github-copilot", "mai-code-1.1-flash", "MAI-Code-1.1-Flash", "MAI-Code-1.1-Flash"),
+        ],
+    )
+    def test_generated_catalog_normalizes_only_rm_gpt_display_names(
+        self, monkeypatch, provider, model_id, name, expected
+    ):
+        bundled = _stub_bundled_codex_catalog()
+        monkeypatch.setattr(cc_codex, "_load_bundled_codex_catalog", lambda: bundled)
+        model = {"provider": provider, "id": model_id, "name": name}
+
+        catalog = cc_codex._build_codex_model_catalog([model])
+
+        assert catalog is not None
+        assert catalog["models"][:-1] == bundled["models"]
+        assert bundled == _stub_bundled_codex_catalog()
+        entry = catalog["models"][-1]
+        assert entry["slug"] == f"{provider}/{model_id}"
+        assert entry["display_name"] == expected
+        assert entry["description"] == f"{expected} via Router-Maestro"
+        assert model == {"provider": provider, "id": model_id, "name": name}
+
+    @pytest.mark.parametrize("name", [None, "", "   ", "(Internal only)", 42])
+    def test_generated_catalog_preserves_slug_fallback(self, monkeypatch, name):
+        monkeypatch.setattr(cc_codex, "_load_bundled_codex_catalog", _stub_bundled_codex_catalog)
+        model = {"provider": "github-copilot", "id": "gpt-5.5", "name": name}
+
+        catalog = cc_codex._build_codex_model_catalog([model])
+
+        assert catalog is not None
+        entry = catalog["models"][-1]
+        assert entry["slug"] == "github-copilot/gpt-5.5"
+        assert entry["display_name"] == entry["slug"]
+        assert model["name"] == name
 
     def test_generated_astra_catalog_exposes_codex_ultra_as_xhigh_multi_agent(self, monkeypatch):
         monkeypatch.setattr(

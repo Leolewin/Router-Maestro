@@ -198,6 +198,12 @@ Each configuration run can refresh
 **Yes** unless a deliberately pinned catalog is required. Codex reads
 `model_catalog_json` at startup, so open a new session after an update.
 
+Generated Router-Maestro GPT display names use a space after `GPT` instead of a
+hyphen, for example `GPT 5.6 Sol`. This keeps their GPT prefix visible and
+distinguishes them from Codex's bundled GPT labels. Model IDs and bundled model
+entries remain unchanged. Generated display names and descriptions also omit a
+trailing `(Internal only)` marker.
+
 Current Codex versions accept the provider definition only at user scope.
 Project configuration can override `model` and the model-catalog path, but it
 inherits the user-level provider. Therefore:
