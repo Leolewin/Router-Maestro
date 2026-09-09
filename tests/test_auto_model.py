@@ -1121,3 +1121,34 @@ async def test_auto_metadata_uses_largest_window_per_tier() -> None:
         (option.tier, option.max_prompt_tokens, option.is_default)
         for option in model.context_window_options
     ] == [("default", 272_000, True)]
+
+
+@pytest.mark.asyncio
+async def test_auto_metadata_does_not_advertise_derived_prompt_budget_as_context_tier() -> None:
+    config = PrioritiesConfig.model_validate(
+        {
+            "auto": {
+                "mode": "priority-chain",
+                "priority_chain": ["test/total-only"],
+            }
+        }
+    )
+    router = _router(
+        config,
+        (
+            _model(
+                "total-only",
+                max_output_tokens=384_000,
+                max_context_window_tokens=1_000_000,
+            ),
+        ),
+    )
+
+    model = await auto_model_info(router)
+
+    assert model.max_prompt_tokens is None
+    assert model.max_output_tokens == 384_000
+    assert model.max_context_window_tokens == 1_000_000
+    assert model.context_window_options == ()
+    assert model.effective_context_window_options()[0].max_prompt_tokens == 616_000
+    assert model.advertised_context_window_options() == ()

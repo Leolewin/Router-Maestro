@@ -409,7 +409,7 @@ async def list_models(model_router: Router = Depends(get_app_router)) -> ModelsR
                         max_prompt_tokens=option.max_prompt_tokens,
                         is_default=option.is_default,
                     )
-                    for option in model.effective_context_window_options()
+                    for option in model.advertised_context_window_options()
                 ],
                 operation_capabilities=dict(model.operation_capabilities),
                 feature_capabilities=dict(model.feature_capabilities),

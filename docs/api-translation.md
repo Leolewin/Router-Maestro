@@ -548,8 +548,16 @@ match across providers.
 
 | Endpoint | Format | Key Fields |
 |---|---|---|
-| `GET /api/openai/v1/models` | OpenAI `ModelList` | `id`, `owned_by`, token/context limits, transport and feature capabilities, reasoning efforts, `virtual` |
+| `GET /api/openai/v1/models` | OpenAI `ModelList` | `id`, `owned_by`, total `context_window`, token/context limits, transport and feature capabilities, reasoning efforts, `virtual` |
 | `GET /api/anthropic/v1/models` | Anthropic `ModelList` | `id`, `display_name`, `supports_thinking`, `supports_vision` |
+
+The OpenAI-compatible `context_window` field is the combined input and output
+capacity used by DSH and similar model-discovery clients. `max_prompt_tokens`
+and `context_window_options[].max_prompt_tokens` remain prompt-only limits when
+the provider explicitly publishes them. Router-Maestro does not expose its
+internal `total - maximum output` safety calculation as a public context tier;
+the Codex config exporter performs that calculation separately for Codex's
+prompt-only `context_window` field.
 
 Both call `router.list_models()`, which aggregates and de-duplicates `ModelInfo`
 from all providers. Successful OpenAI Chat/Responses, Anthropic, Gemini, and

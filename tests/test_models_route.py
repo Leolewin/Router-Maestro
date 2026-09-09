@@ -334,6 +334,7 @@ async def test_public_model_lists_expose_supported_context_windows():
     assert [option.model_dump() for option in openai_response.data[0].context_window_options] == (
         expected
     )
+    assert openai_response.data[0].context_window == 1_050_000
     assert openai_response.data[0].operation_capabilities == {"responses": True}
     assert openai_response.data[0].feature_capabilities == {
         "parallel_tools": True,
@@ -347,6 +348,37 @@ async def test_public_model_lists_expose_supported_context_windows():
     assert [option.model_dump() for option in admin_response.models[0].context_window_options] == (
         expected
     )
+
+
+@pytest.mark.anyio
+async def test_public_model_lists_keep_total_context_separate_from_derived_prompt_budget():
+    info = ModelInfo(
+        id="deepseek-v4-flash",
+        name="DeepSeek-V4-Flash",
+        provider="deepseek",
+        max_output_tokens=384_000,
+        max_context_window_tokens=1_000_000,
+    )
+
+    class _ContextRouter:
+        async def list_models(self):
+            return [info]
+
+    typed_router = cast(Router, _ContextRouter())
+    openai_response = await list_models(typed_router)
+    anthropic_response = await list_anthropic_models(model_router=typed_router)
+    admin_response = await list_admin_models(typed_router)
+
+    model = openai_response.data[0]
+    assert model.context_window == 1_000_000
+    assert model.max_context_window_tokens == 1_000_000
+    assert model.max_output_tokens == 384_000
+    assert model.max_prompt_tokens is None
+    assert model.context_window_options == []
+    assert info.effective_context_window_options()[0].max_prompt_tokens == 616_000
+    assert info.advertised_context_window_options() == ()
+    assert anthropic_response.data[0].context_window_options == []
+    assert admin_response.models[0].context_window_options == []
 
 
 class _RoundTripProvider(BaseProvider):
