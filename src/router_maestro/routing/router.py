@@ -20,6 +20,7 @@ from router_maestro.providers import (
     ChatResponse,
     ChatStreamChunk,
     CopilotProvider,
+    DeepSeekProvider,
     ModelInfo,
     OpenAIProvider,
     ProviderError,
@@ -530,6 +531,7 @@ class Router:
         self._add_builtin_provider("github-copilot", CopilotProvider, old_providers)
         self._add_builtin_provider("openai", OpenAIProvider, old_providers)
         self._add_builtin_provider("anthropic", AnthropicProvider, old_providers)
+        self._add_builtin_provider("deepseek", DeepSeekProvider, old_providers)
 
         # Load custom providers from providers.json
         for provider_name, provider_config in custom_providers_config.providers.items():

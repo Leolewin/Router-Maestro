@@ -100,6 +100,9 @@ class TestGetConfigForProvider:
     def test_openai(self):
         assert get_config_for_provider("openai") is OPENAI_CONFIG
 
+    def test_deepseek_uses_openai_compatible_fallback(self):
+        assert get_config_for_provider("deepseek") is OPENAI_CONFIG
+
     def test_none_returns_default(self):
         assert get_config_for_provider(None) is DEFAULT_CONFIG
 

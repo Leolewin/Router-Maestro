@@ -99,3 +99,7 @@ def test_guard_covers_the_route_revalidated_schemas():
         reachable |= _reachable_models(root)
     assert OpenAIThinkingConfig not in reachable
     assert ResponsesReasoningConfig not in reachable
+
+
+def test_responses_reasoning_accepts_provider_disable_sentinel() -> None:
+    assert ResponsesReasoningConfig.model_validate({"effort": "none"}).effort == "none"

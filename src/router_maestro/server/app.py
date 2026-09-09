@@ -45,6 +45,7 @@ from router_maestro.server.routes import (
     anthropic_beta_router,
     anthropic_router,
     chat_router,
+    files_router,
     gemini_router,
     models_router,
     openai_responses_beta_router,
@@ -230,6 +231,7 @@ def create_app() -> FastAPI:
 
     # Include routers with API key verification
     app.include_router(chat_router, dependencies=[Depends(verify_api_key)])
+    app.include_router(files_router, dependencies=[Depends(verify_api_key)])
     app.include_router(models_router, dependencies=[Depends(verify_api_key)])
     app.include_router(responses_router, dependencies=[Depends(verify_api_key)])
     app.include_router(openai_responses_beta_router, dependencies=[Depends(verify_api_key)])

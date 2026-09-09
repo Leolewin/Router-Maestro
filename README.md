@@ -61,6 +61,7 @@ the same catalog through its native API surface.
 | GitHub Copilot | OAuth device flow | Messages, Chat, Responses as advertised by each model |
 | OpenAI | API key | OpenAI-compatible transport |
 | Anthropic | API key | Anthropic Messages |
+| DeepSeek | API key | Native Messages, Chat, Responses, and Files; Gemini converts to Chat |
 | Custom OpenAI-compatible | API key, environment key, or explicit anonymous mode | Chat Completions |
 
 Unsupported cross-protocol fields fail explicitly before provider I/O rather

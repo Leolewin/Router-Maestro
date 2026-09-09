@@ -612,6 +612,96 @@ async def test_chat_response_decodes_copilot_reasoning_aliases_without_losing_us
 
 
 @pytest.mark.asyncio
+async def test_chat_response_decodes_deepseek_cache_usage_aliases() -> None:
+    payload = {
+        "id": "chat_deepseek",
+        "object": "chat.completion",
+        "created": 10,
+        "model": "deepseek-v4-flash",
+        "choices": [
+            {
+                "index": 0,
+                "message": {
+                    "role": "assistant",
+                    "content": "OK",
+                    "reasoning_content": "plan",
+                },
+                "finish_reason": "stop",
+                "logprobs": None,
+            }
+        ],
+        "usage": {
+            "prompt_tokens": 16,
+            "completion_tokens": 4,
+            "total_tokens": 20,
+            "prompt_cache_hit_tokens": 12,
+            "prompt_cache_miss_tokens": 4,
+            "prompt_tokens_details": {"cached_tokens": 12},
+            "completion_tokens_details": {"reasoning_tokens": 3},
+        },
+        "system_fingerprint": "fp_deepseek",
+    }
+
+    semantic = await OpenAIChatRuntime().decode_response(payload)
+
+    assert semantic.output == (
+        SemanticMessage(
+            role=MessageRole.ASSISTANT,
+            content=(TextContent("OK"), ReasoningSummary("plan")),
+        ),
+    )
+    assert semantic.usage == Usage(
+        input_tokens=16,
+        output_tokens=4,
+        total_tokens=20,
+        cached_input_tokens=12,
+        reasoning_tokens=3,
+    )
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("usage_update", "expected_path"),
+    [
+        ({"prompt_cache_hit_tokens": 11}, "usage.prompt_cache_hit_tokens"),
+        ({"prompt_cache_miss_tokens": 5}, "usage.prompt_cache_miss_tokens"),
+    ],
+)
+async def test_chat_response_rejects_inconsistent_deepseek_cache_usage(
+    usage_update: dict[str, int],
+    expected_path: str,
+) -> None:
+    usage = {
+        "prompt_tokens": 16,
+        "completion_tokens": 1,
+        "total_tokens": 17,
+        "prompt_cache_hit_tokens": 12,
+        "prompt_cache_miss_tokens": 4,
+        "prompt_tokens_details": {"cached_tokens": 12},
+        **usage_update,
+    }
+    payload = {
+        "id": "chat_deepseek",
+        "object": "chat.completion",
+        "created": 10,
+        "model": "deepseek-v4-flash",
+        "choices": [
+            {
+                "index": 0,
+                "message": {"role": "assistant", "content": "OK"},
+                "finish_reason": "stop",
+            }
+        ],
+        "usage": usage,
+    }
+
+    with pytest.raises(ProtocolDecodeError) as raised:
+        await OpenAIChatRuntime().decode_response(payload)
+
+    assert raised.value.path == expected_path
+
+
+@pytest.mark.asyncio
 async def test_responses_response_accepts_only_declared_nonsemantic_echo_fields() -> None:
     runtime = OpenAIResponsesRuntime()
     payload = _responses_response(
@@ -697,6 +787,24 @@ async def test_responses_completed_text_output_uses_stop_finish_reason() -> None
 
     assert semantic.terminal is not None
     assert semantic.terminal.finish_reason == "stop"
+
+
+@pytest.mark.asyncio
+async def test_responses_reasoning_none_decodes_and_reencodes_as_disabled() -> None:
+    runtime = OpenAIResponsesRuntime()
+    payload = {
+        "model": "deepseek-v4-flash",
+        "input": "hello",
+        "reasoning": {"effort": "none"},
+    }
+
+    manifest = runtime.inspect_request(payload)
+    semantic = await runtime.decode_request(payload)
+    encoded = await runtime.encode_request(semantic)
+
+    assert manifest.reasoning is False
+    assert semantic.reasoning == ReasoningConfig(enabled=False)
+    assert encoded["reasoning"] == {"effort": "none"}
 
 
 @pytest.mark.asyncio

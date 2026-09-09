@@ -846,6 +846,19 @@ class BaseProvider(ABC):
         del ingress_protocol
         return tuple(binding.id for binding in self.bindings())
 
+    def transport_candidates(
+        self,
+        ingress_protocol: WireProtocol,
+    ) -> tuple[str, ...]:
+        """Return bindings that may serve one ingress protocol.
+
+        Most providers allow the dispatcher to try every declared transport.
+        Providers with a stricter wire contract can narrow the set without
+        pretending that an otherwise supported endpoint does not exist.
+        """
+        del ingress_protocol
+        return tuple(binding.id for binding in self.bindings())
+
     async def ensure_token(self) -> None:
         """Ensure the provider has a valid token.
 

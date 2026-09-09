@@ -1507,6 +1507,12 @@ def test_request_feature_detection_tolerates_non_string_schema_type():
     )
 
 
+def test_responses_none_effort_disables_reasoning_requirement() -> None:
+    request = ResponsesRequest(model="m", input="hello", reasoning_effort="none")
+
+    assert RequestFeatures.for_responses(request) == RequestFeatures()
+
+
 def test_plan_route_is_not_used_for_token_counting_operation():
     assert {operation.value for operation in Operation} == {
         "chat",

@@ -321,13 +321,12 @@ class TestResponsesSchemaPassthrough:
 
         assert reasoning.effort == "minimal"
 
-    def test_schema_rejects_provider_catalog_none_sentinel(self):
-        from pydantic import ValidationError
-
+    def test_schema_accepts_responses_disable_sentinel(self):
         from router_maestro.server.schemas.responses import ResponsesReasoningConfig
 
-        with pytest.raises(ValidationError):
-            ResponsesReasoningConfig.model_validate({"effort": "none"})
+        reasoning = ResponsesReasoningConfig.model_validate({"effort": "none"})
+
+        assert reasoning.effort == "none"
 
     def test_omitted_responses_reasoning_remains_unset(self):
         from router_maestro.server.schemas.responses import (

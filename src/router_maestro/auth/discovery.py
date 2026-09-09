@@ -70,6 +70,13 @@ BUILTIN_PROVIDER_AUTH_DEFINITIONS = (
         credential_required=True,
         source=ProviderAuthSource.BUILTIN,
     ),
+    ProviderAuthDefinition(
+        provider="deepseek",
+        display_name="DeepSeek",
+        auth_type=AuthType.API_KEY,
+        credential_required=True,
+        source=ProviderAuthSource.BUILTIN,
+    ),
 )
 
 

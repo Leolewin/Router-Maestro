@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from router_maestro.routing.model_ref import validate_provider_id
 
-RESERVED_PROVIDER_NAMES = frozenset({"github-copilot", "openai", "anthropic"})
+RESERVED_PROVIDER_NAMES = frozenset({"github-copilot", "openai", "anthropic", "deepseek"})
 
 
 def default_custom_api_key_env(provider: str) -> str:

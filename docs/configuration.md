@@ -75,11 +75,12 @@ router-maestro auth list
 router-maestro auth login github-copilot
 router-maestro auth login openai
 router-maestro auth login anthropic
+router-maestro auth login deepseek
 ```
 
 GitHub Copilot uses an OAuth device flow. The terminal prints a verification URL
 and short-lived user code; complete that step in a browser. OpenAI, Anthropic,
-and authenticated custom providers prompt for an API key.
+DeepSeek, and authenticated custom providers prompt for an API key.
 
 After login, refresh and inspect the live catalog:
 
@@ -101,6 +102,7 @@ Provider-qualified IDs are the safest public form:
 github-copilot/gpt-5.6-terra
 openai/gpt-5.6-terra
 anthropic/claude-opus-4.6
+deepseek/deepseek-v4-pro
 ```
 
 They remain unambiguous when two providers expose the same upstream ID. The
@@ -275,6 +277,47 @@ DSH defines `contextWindow` as the combined request + response capacity, so a
 GPT model with a 922K prompt budget and 128K output allowance is written as
 `contextWindow: 1050000`. Router-Maestro does not set DSH `maxTokens`, because
 that field would also become the default output limit on requests.
+
+#### Use DSH's native DeepSeek adapter through Router-Maestro
+
+Router-Maestro also has a built-in `deepseek` provider. Its OpenAI Chat,
+OpenAI Responses, and Anthropic Messages bindings use DeepSeek's corresponding
+native upstream endpoint. Matching ingress protocols stay on the raw identity
+path; Gemini ingress is converted to DeepSeek Chat Completions.
+
+First save the DeepSeek upstream key on the Router-Maestro server:
+
+```bash
+router-maestro auth login deepseek
+```
+
+Then edit DSH's `DeepSeek` (`deepseek-official`) provider and set:
+
+```text
+API key:  <the Router-Maestro server API key, not the DeepSeek key>
+Base URL: https://<router-maestro-host>/api/openai/v1
+Models:   deepseek-v4-flash
+          deepseek-v4-pro
+          deepseek-v4-flash-vision-exp
+```
+
+DSH appends `/chat/completions` to that Base URL. Router-Maestro pins these
+three bare official IDs to its `deepseek` provider, replaces the downstream
+authorization header with the server-side DeepSeek credential, and preserves
+DeepSeek-specific Chat fields such as `reasoning_content`, `thinking`, and
+future extension fields. The provider catalog also exposes the unambiguous
+`deepseek/<model>` form to other clients. The Anthropic-compatible
+`/messages/count_tokens` route also calls DeepSeek's native exact-count endpoint
+and falls back to local estimation only if that upstream helper is unavailable.
+
+The same Base URL exposes DeepSeek's OpenAI-compatible Files API at
+`/api/openai/v1/files`. DSH can upload a vision image, reuse its `file-api-*`
+ID, list or inspect stored files, and delete files without falling back to
+inline base64. These operations always target the built-in DeepSeek provider
+and its server-side credential; they do not participate in model routing or
+provider fallback. DeepSeek currently accepts JPEG, PNG, GIF, and WebP uploads
+up to 64 MiB, with either permanent storage or an optional lifetime from one
+hour to 30 days.
 
 ## Configure with the Local Web Portal
 

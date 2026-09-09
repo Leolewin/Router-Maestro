@@ -67,6 +67,7 @@ class _Provider(BaseProvider):
         *,
         bindings: tuple[EndpointBinding, ...] = _ALL_BINDINGS,
         preferences: tuple[str, ...] | None = None,
+        candidates: tuple[str, ...] | None = None,
         aliases: Mapping[str, str] | None = None,
         authenticated: bool = True,
     ) -> None:
@@ -76,6 +77,7 @@ class _Provider(BaseProvider):
         )
         self._bindings = bindings
         self._preferences = preferences
+        self._candidates = candidates
         self._aliases = dict(aliases or {})
         self._authenticated = authenticated
 
@@ -111,6 +113,12 @@ class _Provider(BaseProvider):
         del ingress_protocol
         if self._preferences is not None:
             return self._preferences
+        return tuple(binding.id for binding in self._bindings)
+
+    def transport_candidates(self, ingress_protocol: WireProtocol) -> tuple[str, ...]:
+        del ingress_protocol
+        if self._candidates is not None:
+            return self._candidates
         return tuple(binding.id for binding in self._bindings)
 
 
@@ -773,6 +781,38 @@ def test_handler_rejects_duplicate_transport_preferences() -> None:
     )
 
     with pytest.raises(ValueError, match="duplicate transport preferences"):
+        ProviderHandler(provider).bindings_for(
+            _candidate(provider),
+            WireProtocol.OPENAI_CHAT,
+        )
+
+
+def test_handler_rejects_duplicate_transport_candidates() -> None:
+    chat = _binding(WireProtocol.OPENAI_CHAT)
+    provider = _Provider(
+        "alpha",
+        ("model",),
+        bindings=(chat,),
+        candidates=(chat.id, chat.id),
+    )
+
+    with pytest.raises(ValueError, match="duplicate transport candidates"):
+        ProviderHandler(provider).bindings_for(
+            _candidate(provider),
+            WireProtocol.OPENAI_CHAT,
+        )
+
+
+def test_handler_rejects_unknown_transport_candidate() -> None:
+    chat = _binding(WireProtocol.OPENAI_CHAT)
+    provider = _Provider(
+        "alpha",
+        ("model",),
+        bindings=(chat,),
+        candidates=("unknown",),
+    )
+
+    with pytest.raises(ValueError, match="selects unknown bindings"):
         ProviderHandler(provider).bindings_for(
             _candidate(provider),
             WireProtocol.OPENAI_CHAT,

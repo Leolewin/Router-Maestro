@@ -31,6 +31,20 @@ can switch to the next `ModelRef`, and transport changes do not consume the
 model fallback limit. The first valid upstream stream frame commits the
 candidate and forbids transport or model replay.
 
+DeepSeek deliberately narrows that general fallback rule. OpenAI Chat,
+OpenAI Responses, and Anthropic Messages each select only the matching native
+DeepSeek binding, preserving the raw request and response shape. Gemini has no
+DeepSeek-native wire endpoint in Router-Maestro and selects only the DeepSeek
+Chat binding through semantic IR. A failed native DeepSeek endpoint is therefore
+never retried through another DeepSeek protocol behind the client's back.
+
+DeepSeek's OpenAI-compatible file lifecycle is also exposed as an identity
+proxy at `POST/GET /api/openai/v1/files` and
+`GET/DELETE /api/openai/v1/files/{file_id}`. It forwards the multipart body or
+query unchanged while replacing Router-Maestro authentication with the
+server-side DeepSeek credential. Files belong to that credential's namespace,
+so file operations are fixed to DeepSeek and never enter model routing.
+
 | Ingress | Preferred Copilot transports |
 |---|---|
 | Anthropic Messages | Messages → Responses → Chat |
@@ -39,11 +53,13 @@ candidate and forbids transport or model replay.
 | Gemini | Responses → Chat → Messages |
 
 Provider registrations remain narrower than this dispatcher matrix: Copilot
-registers all three bindings, Anthropic registers Messages, and OpenAI/custom
-providers register their existing Chat binding. There is no Gemini-native
-provider yet. Gemini `generateContent` and `streamGenerateContent` still use the
-shared dispatcher, while Gemini and Anthropic token-count endpoints remain
-separate native-count/estimator operations.
+and DeepSeek register all three bindings, Anthropic registers Messages, and
+OpenAI/custom providers register their existing Chat binding. DeepSeek permits
+only the identity binding for Chat, Responses, and Messages ingress and only
+Chat for Gemini conversion. There is no Gemini-native provider yet. Gemini
+`generateContent` and `streamGenerateContent` still use the shared dispatcher,
+while Gemini and Anthropic token-count endpoints remain separate
+native-count/estimator operations.
 
 ### Reasoning continuation capsules
 

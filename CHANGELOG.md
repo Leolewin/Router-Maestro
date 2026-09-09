@@ -4,6 +4,29 @@ All notable changes to Router-Maestro are documented here.
 
 ---
 
+## v0.9.5 (2026-09-09)
+
+### Added
+
+- **DeepSeek is available as a built-in multi-protocol provider.** Authenticate
+  with `router-maestro auth login deepseek`; the live V4 catalog exposes
+  `deepseek-v4-flash`, `deepseek-v4-pro`, and
+  `deepseek-v4-flash-vision-exp` with documented context, reasoning, tools,
+  and vision metadata.
+- **DeepSeek's OpenAI and Anthropic APIs stay native end to end.** OpenAI Chat,
+  OpenAI Responses, and Anthropic Messages requests use matching raw identity
+  bindings, while Gemini requests alone convert to DeepSeek Chat. DSH can point
+  its `deepseek-official` custom Base URL at `/api/openai/v1` and retain its
+  native bare model IDs and extensions.
+- **DeepSeek vision files work through the same DSH Base URL.** The OpenAI-style
+  `/api/openai/v1/files` upload, list, retrieve, and delete routes proxy directly
+  to DeepSeek with the server-side credential, preserving multipart uploads and
+  provider error responses for DSH's reuse and quota-recovery behavior.
+- **DeepSeek reasoning and usage extensions survive protocol boundaries.** The
+  Responses surface accepts `reasoning.effort: none`, Anthropic token counting
+  uses DeepSeek's native endpoint, and Chat conversion normalizes DeepSeek's
+  cache-hit/cache-miss counters without weakening strict usage validation.
+
 ## v0.9.4 (2026-09-07)
 
 ### Added

@@ -43,6 +43,17 @@ class ProviderHandler:
         if len(binding_ids) != len(set(binding_ids)):
             raise ValueError(f"provider {self.provider.name!r} declares duplicate binding IDs")
         bindings = dict(zip(binding_ids, declared_bindings, strict=True))
+        candidate_ids = self.provider.transport_candidates(ingress_protocol)
+        if len(candidate_ids) != len(set(candidate_ids)):
+            raise ValueError(
+                f"provider {self.provider.name!r} declares duplicate transport candidates"
+            )
+        unknown_candidates = set(candidate_ids) - set(bindings)
+        if unknown_candidates:
+            raise ValueError(
+                f"provider {self.provider.name!r} selects unknown bindings: "
+                f"{sorted(unknown_candidates)}"
+            )
         preference = self.provider.transport_preferences(ingress_protocol)
         if len(preference) != len(set(preference)):
             raise ValueError(
@@ -53,8 +64,11 @@ class ProviderHandler:
             raise ValueError(
                 f"provider {self.provider.name!r} prefers unknown bindings: {sorted(unknown)}"
             )
-        ordered = [bindings[binding_id] for binding_id in preference]
-        ordered.extend(binding for key, binding in bindings.items() if key not in preference)
+        candidate_set = set(candidate_ids)
+        ordered = [bindings[binding_id] for binding_id in preference if binding_id in candidate_set]
+        ordered.extend(
+            bindings[binding_id] for binding_id in candidate_ids if binding_id not in preference
+        )
         ordered = [
             *(binding for binding in ordered if binding.protocol is ingress_protocol),
             *(binding for binding in ordered if binding.protocol is not ingress_protocol),

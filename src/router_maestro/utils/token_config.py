@@ -101,6 +101,7 @@ _PROVIDER_CONFIG_MAP: dict[str, TokenCountingConfig] = {
     "github-copilot": COPILOT_CONFIG,
     "anthropic": ANTHROPIC_CONFIG,
     "openai": OPENAI_CONFIG,
+    "deepseek": OPENAI_CONFIG,
 }
 
 
