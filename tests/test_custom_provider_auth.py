@@ -57,7 +57,10 @@ def test_custom_provider_options_preserve_unknown_legacy_fields() -> None:
     }
 
 
-@pytest.mark.parametrize("provider", ["github-copilot", "GITHUB-COPILOT", "openai", "Anthropic"])
+@pytest.mark.parametrize(
+    "provider",
+    ["github-copilot", "GITHUB-COPILOT", "openai", "Anthropic", "deepseek", "DeepSeek"],
+)
 def test_custom_provider_names_reject_reserved_builtins(provider: str) -> None:
     with pytest.raises(ValidationError, match="reserved for a built-in provider"):
         ProvidersConfig(providers={provider: _config()})
@@ -208,6 +211,7 @@ def test_provider_auth_definitions_are_builtin_first_then_sorted_custom() -> Non
         "github-copilot",
         "openai",
         "anthropic",
+        "deepseek",
         "alpha-provider",
         "zeta-provider",
     ]
@@ -218,10 +222,17 @@ def test_provider_auth_definitions_are_builtin_first_then_sorted_custom() -> Non
         credential_required=True,
         source=ProviderAuthSource.BUILTIN,
     )
-    assert definitions[3].api_key_env == "ALPHA_TOKEN"
-    assert definitions[3].credential_required is True
-    assert definitions[4].api_key_env == "ZETA_PROVIDER_API_KEY"
-    assert definitions[4].credential_required is False
+    assert definitions[3] == ProviderAuthDefinition(
+        provider="deepseek",
+        display_name="DeepSeek",
+        auth_type=AuthType.API_KEY,
+        credential_required=True,
+        source=ProviderAuthSource.BUILTIN,
+    )
+    assert definitions[4].api_key_env == "ALPHA_TOKEN"
+    assert definitions[4].credential_required is True
+    assert definitions[5].api_key_env == "ZETA_PROVIDER_API_KEY"
+    assert definitions[5].credential_required is False
 
 
 def test_builtin_auth_discovery_does_not_advertise_environment_credentials() -> None:

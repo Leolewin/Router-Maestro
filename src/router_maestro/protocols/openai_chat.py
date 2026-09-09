@@ -368,6 +368,8 @@ class OpenAIChatStreamDecoder:
                             input_details_field="prompt_tokens_details",
                             output_details_field="completion_tokens_details",
                             top_level_reasoning_field="reasoning_tokens",
+                            top_level_cached_input_field="prompt_cache_hit_tokens",
+                            top_level_uncached_input_field="prompt_cache_miss_tokens",
                         )
                     },
                 )
@@ -429,6 +431,8 @@ class OpenAIChatStreamDecoder:
             input_details_field="prompt_tokens_details",
             output_details_field="completion_tokens_details",
             top_level_reasoning_field="reasoning_tokens",
+            top_level_cached_input_field="prompt_cache_hit_tokens",
+            top_level_uncached_input_field="prompt_cache_miss_tokens",
         )
         if usage is None:  # pragma: no cover - the mapping guard makes this unreachable
             decode_reject(_PROTOCOL, "stream.usage", "usage-only frame requires usage")
@@ -1790,6 +1794,8 @@ def _decode_response(
             input_details_field="prompt_tokens_details",
             output_details_field="completion_tokens_details",
             top_level_reasoning_field="reasoning_tokens",
+            top_level_cached_input_field="prompt_cache_hit_tokens",
+            top_level_uncached_input_field="prompt_cache_miss_tokens",
         ),
         terminal=TerminalMetadata(finish_reason=finish_reason, response_status=status),
         metadata=metadata,
@@ -2283,6 +2289,8 @@ def chat_chunk_to_semantic_events(
                 output_field="completion_tokens",
                 input_details_field="prompt_tokens_details",
                 output_details_field="completion_tokens_details",
+                top_level_cached_input_field="prompt_cache_hit_tokens",
+                top_level_uncached_input_field="prompt_cache_miss_tokens",
             ),
         )
     outcome = resolve_terminal_outcome(chunk.terminal_outcome, chunk.finish_reason)

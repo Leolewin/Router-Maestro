@@ -45,6 +45,7 @@ from router_maestro.providers.bindings import (
     ProviderDialect,
 )
 from router_maestro.providers.copilot import CopilotProvider
+from router_maestro.providers.deepseek import DeepSeekProvider
 from router_maestro.providers.http_executor import ProviderHttpClientPool, SharedHttpExecutor
 from router_maestro.providers.openai import OpenAIProvider
 from router_maestro.providers.openai_base import OpenAIChatProvider
@@ -99,5 +100,6 @@ __all__ = [
     "CopilotProvider",
     "OpenAIProvider",
     "AnthropicProvider",
+    "DeepSeekProvider",
     "OpenAICompatibleProvider",
 ]

@@ -266,6 +266,8 @@ def decode_usage(
     input_details_field: str,
     output_details_field: str,
     top_level_reasoning_field: str | None = None,
+    top_level_cached_input_field: str | None = None,
+    top_level_uncached_input_field: str | None = None,
 ) -> Usage | None:
     if value is None:
         return None
@@ -279,6 +281,10 @@ def decode_usage(
     }
     if top_level_reasoning_field is not None:
         allowed.add(top_level_reasoning_field)
+    if top_level_cached_input_field is not None:
+        allowed.add(top_level_cached_input_field)
+    if top_level_uncached_input_field is not None:
+        allowed.add(top_level_uncached_input_field)
     reject_unknown_keys(
         usage,
         frozenset(allowed),
@@ -288,6 +294,24 @@ def decode_usage(
     input_details = usage.get(input_details_field)
     output_details = usage.get(output_details_field)
     cached_tokens = None
+    top_level_cached_tokens = (
+        optional_int(
+            usage.get(top_level_cached_input_field),
+            protocol=protocol,
+            parameter=f"usage.{top_level_cached_input_field}",
+        )
+        if top_level_cached_input_field is not None
+        else None
+    )
+    top_level_uncached_tokens = (
+        optional_int(
+            usage.get(top_level_uncached_input_field),
+            protocol=protocol,
+            parameter=f"usage.{top_level_uncached_input_field}",
+        )
+        if top_level_uncached_input_field is not None
+        else None
+    )
     reasoning_tokens = (
         optional_int(
             usage.get(top_level_reasoning_field),
@@ -313,6 +337,35 @@ def decode_usage(
             details.get("cached_tokens"),
             protocol=protocol,
             parameter=f"usage.{input_details_field}.cached_tokens",
+        )
+    if (
+        cached_tokens is not None
+        and top_level_cached_tokens is not None
+        and cached_tokens != top_level_cached_tokens
+    ):
+        decode_reject(
+            protocol,
+            f"usage.{top_level_cached_input_field}",
+            f"conflicts with usage.{input_details_field}.cached_tokens",
+        )
+    if top_level_cached_tokens is not None:
+        cached_tokens = top_level_cached_tokens
+
+    input_tokens = optional_int(
+        usage.get(input_field),
+        protocol=protocol,
+        parameter=f"usage.{input_field}",
+    )
+    if (
+        input_tokens is not None
+        and top_level_cached_tokens is not None
+        and top_level_uncached_tokens is not None
+        and input_tokens != top_level_cached_tokens + top_level_uncached_tokens
+    ):
+        decode_reject(
+            protocol,
+            f"usage.{top_level_uncached_input_field}",
+            f"does not sum with usage.{top_level_cached_input_field} to usage.{input_field}",
         )
     if output_details is not None:
         details = require_mapping(
@@ -351,11 +404,7 @@ def decode_usage(
         if nested_reasoning_tokens is not None:
             reasoning_tokens = nested_reasoning_tokens
     return Usage(
-        input_tokens=optional_int(
-            usage.get(input_field),
-            protocol=protocol,
-            parameter=f"usage.{input_field}",
-        ),
+        input_tokens=input_tokens,
         output_tokens=optional_int(
             usage.get(output_field),
             protocol=protocol,

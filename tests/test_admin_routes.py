@@ -543,6 +543,7 @@ def test_auth_provider_discovery_uses_server_provider_configuration(monkeypatch)
         "github-copilot",
         "openai",
         "anthropic",
+        "deepseek",
         "ollama",
     ]
     assert response.providers[-1].auth_type is AuthType.API_KEY

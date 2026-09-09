@@ -78,14 +78,13 @@ class RequestFeatures:
 
     @classmethod
     def for_responses(cls, request: ResponsesRequest) -> RequestFeatures:
+        reasoning = request.reasoning_effort not in {None, "none"}
         return cls(
             tools=bool(request.tools),
             vision=_contains_image(request.input),
-            reasoning=bool(request.reasoning_effort),
+            reasoning=reasoning,
             parallel_tools=request.parallel_tool_calls is True,
-            reasoning_parameter=(
-                "reasoning_effort" if request.reasoning_effort is not None else None
-            ),
+            reasoning_parameter=("reasoning_effort" if reasoning else None),
         )
 
     @classmethod

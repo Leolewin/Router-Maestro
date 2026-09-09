@@ -1836,7 +1836,7 @@ def test_openai_invalid_reasoning_effort_is_native_400(
     router.chat_completion.assert_not_awaited()
 
 
-@pytest.mark.parametrize("effort", ["ultra", "none"])
+@pytest.mark.parametrize("effort", ["ultra"])
 def test_responses_invalid_reasoning_effort_is_native_400(
     client: TestClient,
     effort: str,

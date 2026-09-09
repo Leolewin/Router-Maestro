@@ -169,6 +169,10 @@ class OpenAIResponsesRuntime:
     def inspect_request(self, payload: Mapping[str, Any]) -> RequestManifest:
         input_value = payload.get("input")
         reasoning_carriers, opaque_continuation = _inspect_reasoning_continuation(input_value)
+        reasoning = payload.get("reasoning")
+        reasoning_requested = bool(reasoning)
+        if isinstance(reasoning, Mapping) and reasoning.get("effort") == "none":
+            reasoning_requested = False
         return RequestManifest(
             protocol=self.protocol,
             model=payload.get("model") if isinstance(payload.get("model"), str) else None,
@@ -176,7 +180,7 @@ class OpenAIResponsesRuntime:
             tools=bool(payload.get("tools")),
             images=has_typed_block(input_value, {"input_image", "image_url"}),
             files=has_typed_block(input_value, {"input_file"}),
-            reasoning=bool(payload.get("reasoning")) or opaque_continuation,
+            reasoning=reasoning_requested or opaque_continuation,
             parallel_tools=payload.get("parallel_tool_calls") is True,
             reasoning_capsules=tuple(
                 carrier for carrier in reasoning_carriers if is_reasoning_capsule_carrier(carrier)
@@ -2067,12 +2071,12 @@ def _decode_reasoning(value: object) -> ReasoningConfig | None:
     )
     if summary not in {None, "auto", "concise", "detailed", "none"}:
         decode_reject(_PROTOCOL, "reasoning.summary", f"unsupported value {summary!r}")
-    return ReasoningConfig(
-        enabled=True,
-        effort=optional_string(
-            reasoning.get("effort"), protocol=_PROTOCOL, parameter="reasoning.effort"
-        ),
+    effort = optional_string(
+        reasoning.get("effort"), protocol=_PROTOCOL, parameter="reasoning.effort"
     )
+    if effort == "none":
+        return ReasoningConfig(enabled=False)
+    return ReasoningConfig(enabled=True, effort=effort)
 
 
 def _decode_request_metadata(body: Mapping[str, Any]) -> Mapping[str, Any]:
@@ -2725,10 +2729,8 @@ def _encode_request(
     if request.parallel_tool_calls is not None:
         payload["parallel_tool_calls"] = request.parallel_tool_calls
     if request.reasoning is not None:
-        if request.reasoning.enabled is False:
-            reject(_PROTOCOL, "reasoning.enabled", "Responses has no disabled reasoning value")
         reasoning = {}
-        effort = request.reasoning.effort
+        effort = "none" if request.reasoning.enabled is False else request.reasoning.effort
         if effort is None and request.reasoning.budget_tokens is not None:
             effort = budget_to_effort(request.reasoning.budget_tokens)
             if effort is None:
