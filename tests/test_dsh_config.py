@@ -47,6 +47,20 @@ def _sol() -> dict:
     }
 
 
+def _deepseek() -> dict:
+    return {
+        "provider": "deepseek",
+        "id": "deepseek/deepseek-v4-flash",
+        "name": "DeepSeek-V4-Flash",
+        "max_prompt_tokens": None,
+        "max_output_tokens": 384_000,
+        "max_context_window_tokens": 1_000_000,
+        "context_window_options": [],
+        "feature_capabilities": {"vision": False},
+        "reasoning_effort_values": ["none", "low", "medium", "high", "xhigh", "max"],
+    }
+
+
 def _write(
     path: Path,
     *,
@@ -88,7 +102,7 @@ def test_dsh_client_is_registered() -> None:
 
 @pytest.mark.parametrize(
     ("model", "expected"),
-    [(_astra(), 1_000_000), (_sol(), 1_050_000)],
+    [(_astra(), 1_000_000), (_sol(), 1_050_000), (_deepseek(), 1_000_000)],
 )
 def test_dsh_context_window_uses_combined_upstream_capacity(model: dict, expected: int) -> None:
     assert _dsh_context_window(model) == expected
@@ -147,6 +161,30 @@ def test_dsh_write_preserves_unrelated_settings_and_generates_catalog(tmp_path: 
         "provider": "router-maestro",
         "model": "github-copilot/gpt-6-astra",
     }
+
+
+def test_dsh_writes_deepseek_total_context_window(tmp_path: Path) -> None:
+    path = tmp_path / "settings.yaml"
+
+    _write(path, selected=_deepseek(), catalog=[_deepseek()])
+
+    models = _load(path)["llm-pi-ai"]["providers"]["router-maestro"]["models"]
+    assert models == [
+        {
+            "id": "deepseek/deepseek-v4-flash",
+            "name": "DeepSeek-V4-Flash",
+            "contextWindow": 1_000_000,
+            "input": ["text"],
+            "reasoningEfforts": {
+                "off": "none",
+                "low": "low",
+                "medium": "medium",
+                "high": "high",
+                "xhigh": "xhigh",
+                "max": "max",
+            },
+        }
+    ]
 
 
 def test_dsh_preview_can_read_original_target_without_modifying_it(tmp_path: Path) -> None:

@@ -942,7 +942,7 @@ async def list_models(
                     max_prompt_tokens=option.max_prompt_tokens,
                     is_default=option.is_default,
                 )
-                for option in model.effective_context_window_options()
+                for option in model.advertised_context_window_options()
             ],
             supports_thinking=model.supports_thinking or None,
             supports_vision=model.supports_vision or None,

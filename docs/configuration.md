@@ -278,6 +278,12 @@ GPT model with a 922K prompt budget and 128K output allowance is written as
 `contextWindow: 1050000`. Router-Maestro does not set DSH `maxTokens`, because
 that field would also become the default output limit on requests.
 
+The same rule applies to DeepSeek: its 1M total window remains
+`contextWindow: 1000000` in DSH. The 616K value obtained by reserving the full
+384K maximum output allowance is a Codex prompt-budget convention only; Codex
+catalog generation writes `context_window: 616000` together with
+`max_context_window: 1000000`.
+
 #### Use DSH's native DeepSeek adapter through Router-Maestro
 
 Router-Maestro also has a built-in `deepseek` provider. Its OpenAI Chat,

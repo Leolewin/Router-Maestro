@@ -171,6 +171,7 @@ class ModelObject(BaseModel):
     object: str = "model"
     created: int = 0
     owned_by: str
+    context_window: int | None = None
     max_prompt_tokens: int | None = None
     max_output_tokens: int | None = None
     max_context_window_tokens: int | None = None

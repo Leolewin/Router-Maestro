@@ -273,7 +273,7 @@ async def auto_model_info(router: Any) -> ModelInfo:
     context_by_tier: dict[str, Any] = {}
     default_tiers: set[str] = set()
     for candidate in candidates:
-        for option in candidate.info.effective_context_window_options():
+        for option in candidate.info.advertised_context_window_options():
             existing = context_by_tier.get(option.tier)
             if existing is None or option.max_prompt_tokens > existing.max_prompt_tokens:
                 context_by_tier[option.tier] = option

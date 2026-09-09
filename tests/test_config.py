@@ -965,6 +965,31 @@ class TestCodexConfig:
         assert entry["context_window"] == prompt
         assert entry["max_context_window"] == total
 
+    def test_generated_catalog_derives_deepseek_codex_prompt_from_total(self, monkeypatch):
+        monkeypatch.setattr(
+            cc_codex,
+            "_load_bundled_codex_catalog",
+            lambda: _stub_bundled_codex_catalog(),
+        )
+        model = {
+            "provider": "deepseek",
+            "id": "deepseek/deepseek-v4-flash",
+            "name": "DeepSeek-V4-Flash",
+            "max_prompt_tokens": None,
+            "max_output_tokens": 384_000,
+            "max_context_window_tokens": 1_000_000,
+            "context_window_options": [],
+        }
+
+        catalog = cc_codex._build_codex_model_catalog([model])
+
+        assert catalog is not None
+        entry = next(
+            item for item in catalog["models"] if item["slug"] == "deepseek/deepseek-v4-flash"
+        )
+        assert entry["context_window"] == 616_000
+        assert entry["max_context_window"] == 1_000_000
+
     def test_generated_catalog_strips_internal_only_display_suffix(self, monkeypatch):
         monkeypatch.setattr(
             cc_codex,

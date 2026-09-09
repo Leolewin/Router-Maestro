@@ -4,6 +4,17 @@ All notable changes to Router-Maestro are documented here.
 
 ---
 
+## v0.9.6 (2026-09-09)
+
+### Fixed
+
+- **DSH model discovery now receives combined context capacity.** The
+  OpenAI-compatible model catalog publishes `context_window` as the total input
+  plus output window and no longer exposes Router-Maestro's derived
+  `total - maximum output` safety budget as a provider context tier. DeepSeek
+  therefore remains 1M in DSH, while the Codex catalog continues to use 616K
+  for `context_window` and 1M for `max_context_window`.
+
 ## v0.9.5 (2026-09-09)
 
 ### Added

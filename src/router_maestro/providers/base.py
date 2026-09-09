@@ -454,6 +454,28 @@ class ModelInfo:
             ),
         )
 
+    def advertised_context_window_options(self) -> tuple[ContextWindowOption, ...]:
+        """Return provider-declared prompt choices without deriving from total capacity.
+
+        ``effective_context_window_options`` is intentionally conservative for
+        routing: when a provider gives only total context and maximum output it
+        reserves that complete output allowance from the prompt budget. Public
+        catalogs must not expose that internal calculation as a provider context
+        tier, because clients such as DSH define ``contextWindow`` as the combined
+        input and output capacity.
+        """
+        if self.context_window_options:
+            return self.context_window_options
+        if self.max_prompt_tokens is None:
+            return ()
+        return (
+            ContextWindowOption(
+                tier="default",
+                max_prompt_tokens=self.max_prompt_tokens,
+                is_default=True,
+            ),
+        )
+
     def with_overrides(
         self,
         *,
