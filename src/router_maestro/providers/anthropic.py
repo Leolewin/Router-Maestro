@@ -35,8 +35,10 @@ from router_maestro.providers.bindings import (
 from router_maestro.providers.http_executor import ProviderHttpClientPool, SharedHttpExecutor
 from router_maestro.routing.capabilities import Operation, ProviderCapabilities
 from router_maestro.routing.model_ref import ModelRef
+from router_maestro.routing.transport_policy import COMPATIBILITY_TRANSPORT_POLICY, TransportPolicy
 from router_maestro.utils import get_logger
 from router_maestro.utils.context_window import normalize_thinking_budget
+from router_maestro.utils.token_config import count_tokens_via_anthropic_api
 
 logger = get_logger("providers.anthropic")
 
@@ -56,6 +58,25 @@ class AnthropicProvider(BaseProvider):
     """Anthropic Claude provider."""
 
     name = "anthropic"
+
+    @property
+    def transport_policy(self) -> TransportPolicy:
+        """Keep Chat/Responses/Gemini clients usable with a Messages-only provider."""
+        return COMPATIBILITY_TRANSPORT_POLICY
+
+    async def count_tokens(
+        self, protocol: WireProtocol, payload: Mapping[str, Any], *, model: str
+    ) -> int | None:
+        if protocol is not WireProtocol.ANTHROPIC_MESSAGES:
+            return None
+        return await count_tokens_via_anthropic_api(
+            base_url=self.base_url,
+            api_key=self._get_api_key(),
+            model=model,
+            messages=payload.get("messages", []),
+            system=payload.get("system"),
+            tools=payload.get("tools"),
+        )
 
     def bindings(self) -> tuple[EndpointBinding, ...]:
         """Expose Anthropic Messages as a protocol-native raw binding."""

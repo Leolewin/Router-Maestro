@@ -26,40 +26,67 @@ response.
 Routing and translation are independent decisions. `GenerationRoutePlan`
 contains provider/model candidates only; it never freezes a protocol
 conversion. `ProviderHandler` owns binding availability and transport order.
-All compatible transports for one model are tried before a retryable failure
-can switch to the next `ModelRef`, and transport changes do not consume the
-model fallback limit. The first valid upstream stream frame commits the
-candidate and forbids transport or model replay.
+`TransportPolicy` defines the shared default protocol chains:
 
-DeepSeek deliberately narrows that general fallback rule. OpenAI Chat,
-OpenAI Responses, and Anthropic Messages each select only the matching native
-DeepSeek binding, preserving the raw request and response shape. Gemini has no
-DeepSeek-native wire endpoint in Router-Maestro and selects only the DeepSeek
-Chat binding through semantic IR. A failed native DeepSeek endpoint is therefore
-never retried through another DeepSeek protocol behind the client's back.
+| Ingress | Default protocol candidates, when declared and supported |
+|---|---|
+| OpenAI Responses | Responses → Chat |
+| Anthropic Messages | Messages → Responses → Chat |
+| OpenAI Chat | Chat |
+| Gemini | Gemini → Chat (no bundled Gemini-native transport yet) |
+
+Capability fallback and failure recovery are separate. Missing bindings,
+negative model capability metadata, unsupported execution modes, and inexact
+conversions skip an unusable candidate before I/O. A retryable upstream failure
+does **not** permit changing transports by default; `recover_retryable_errors`
+is a separate provider opt-in. `recover_request_rejections` controls retries
+after adapter option/unsupported-operation rejections. A retryable failure can
+still use the independently configured model fallback policy. Transport changes
+never consume the model fallback limit. The first valid upstream stream frame
+commits the candidate and forbids transport or model replay.
+
+DeepSeek uses these shared chains with both failure-recovery flags disabled.
+Chat, Responses, and Messages prefer matching raw identity bindings, while
+Gemini converts to Chat. If a model explicitly lacks a native transport,
+capability fallback is possible; a failed native DeepSeek attempt is never
+retried through another DeepSeek protocol.
 
 DeepSeek's OpenAI-compatible file lifecycle is also exposed as an identity
 proxy at `POST/GET /api/openai/v1/files` and
 `GET/DELETE /api/openai/v1/files/{file_id}`. It forwards the multipart body or
 query unchanged while replacing Router-Maestro authentication with the
-server-side DeepSeek credential. Files belong to that credential's namespace,
-so file operations are fixed to DeepSeek and never enter model routing.
+server-side DeepSeek credential. These routes are declared by the DeepSeek
+plugin, not the main application; `/api/providers/deepseek/v1/files` and its
+`/{file_id}` child provide provider-qualified aliases. Files belong to that
+credential's namespace, so file operations never enter model routing or
+cross-provider fallback. All aliases use the same authentication and lifecycle
+boundary.
 
 | Ingress | Preferred Copilot transports |
 |---|---|
 | Anthropic Messages | Messages → Responses → Chat |
 | OpenAI Chat | Chat → Responses → Messages |
 | OpenAI Responses | Responses → Chat → Messages |
-| Gemini | Responses → Chat → Messages |
+| Gemini | Chat → Responses → Messages |
 
 Provider registrations remain narrower than this dispatcher matrix: Copilot
 and DeepSeek register all three bindings, Anthropic registers Messages, and
-OpenAI/custom providers register their existing Chat binding. DeepSeek permits
-only the identity binding for Chat, Responses, and Messages ingress and only
-Chat for Gemini conversion. There is no Gemini-native provider yet. Gemini
+OpenAI registers Chat and Responses. Custom OpenAI-compatible providers register
+Chat by default and opt into Responses with `options.responses: true`.
+Copilot, Anthropic, and OpenAI-compatible providers explicitly enable extended
+compatibility paths so existing clients can still call models with a different
+native protocol. Copilot also explicitly retains retryable-error transport
+recovery. Legacy bindings retain the previous compatibility/recovery policy.
+There is no Gemini-native provider yet. Gemini
 `generateContent` and `streamGenerateContent` still use the shared dispatcher,
 while Gemini and Anthropic token-count endpoints remain separate
-native-count/estimator operations.
+native-count/estimator operations. The standard Anthropic count route calls the
+selected provider's `count_tokens` capability; it does not inspect provider names
+or access their credentials directly.
+
+Provider/model selection remains independent of plugin registration and protocol
+translation. See [Provider Plugins](provider-plugins.md) for the registration,
+request-hook, codec-option, endpoint, and lifecycle contracts.
 
 ### Reasoning continuation capsules
 

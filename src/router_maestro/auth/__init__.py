@@ -1,7 +1,6 @@
 """Auth module for router-maestro."""
 
 from router_maestro.auth.discovery import (
-    BUILTIN_PROVIDER_AUTH_DEFINITIONS,
     ProviderAuthDefinition,
     ProviderAuthSource,
     provider_auth_definitions,
@@ -27,6 +26,13 @@ __all__ = [
     "run_async",
     "ProviderAuthDefinition",
     "ProviderAuthSource",
-    "BUILTIN_PROVIDER_AUTH_DEFINITIONS",
     "provider_auth_definitions",
 ]
+
+
+def __getattr__(name: str):
+    if name == "BUILTIN_PROVIDER_AUTH_DEFINITIONS":
+        from router_maestro.providers.registry import default_provider_registry
+
+        return default_provider_registry().auth_definitions
+    raise AttributeError(name)

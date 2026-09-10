@@ -20,6 +20,7 @@ from starlette.types import HTTPExceptionHandler
 from router_maestro import __version__
 from router_maestro.config.repository import RuntimeConfigRepository
 from router_maestro.providers import ProviderError
+from router_maestro.providers.registry import ProviderRegistry, default_provider_registry
 from router_maestro.routing.router import RouterOwner
 from router_maestro.runtime import (
     REASONING_CAPSULE_KEY_ENV,
@@ -40,12 +41,15 @@ from router_maestro.server.protocols.errors import (
     protocol_error_response,
     protocol_surface_for_path,
 )
+from router_maestro.server.provider_endpoints import (
+    extension_error_surface,
+    mount_provider_endpoints,
+)
 from router_maestro.server.routes import (
     admin_router,
     anthropic_beta_router,
     anthropic_router,
     chat_router,
-    files_router,
     gemini_router,
     models_router,
     openai_responses_beta_router,
@@ -139,7 +143,7 @@ def verify_metrics_access(request: Request) -> None:
 
 async def unhandled_exception_handler(request: Request, _exc: Exception) -> Response:
     """Encode protocol failures while retaining the existing non-protocol 500."""
-    surface = protocol_surface_for_path(request.url.path)
+    surface = extension_error_surface(request) or protocol_surface_for_path(request.url.path)
     request_id = getattr(request.state, "request_id", None)
     headers = {REQUEST_ID_HEADER: request_id} if isinstance(request_id, str) else None
     if surface is not None:
@@ -160,7 +164,7 @@ async def protocol_http_exception_handler(
     exc: StarletteHTTPException,
 ) -> Response:
     """Dispatch framework HTTP errors by public protocol namespace."""
-    surface = protocol_surface_for_path(request.url.path)
+    surface = extension_error_surface(request) or protocol_surface_for_path(request.url.path)
     if surface is None:
         return await default_http_exception_handler(request, exc)
     return protocol_error_response(exc, surface)
@@ -171,7 +175,7 @@ async def protocol_validation_exception_handler(
     exc: RequestValidationError,
 ) -> Response:
     """Dispatch boundary validation failures by public protocol namespace."""
-    surface = protocol_surface_for_path(request.url.path)
+    surface = extension_error_surface(request) or protocol_surface_for_path(request.url.path)
     if surface is None:
         return await default_validation_exception_handler(request, exc)
     return protocol_error_response(exc, surface)
@@ -182,7 +186,7 @@ async def protocol_provider_exception_handler(
     exc: ProviderError,
 ) -> Response:
     """Encode an uncaught provider failure for inference endpoints."""
-    surface = protocol_surface_for_path(request.url.path)
+    surface = extension_error_surface(request) or protocol_surface_for_path(request.url.path)
     if surface is not None:
         return protocol_error_response(exc, surface)
     return Response(
@@ -192,7 +196,7 @@ async def protocol_provider_exception_handler(
     )
 
 
-def create_app() -> FastAPI:
+def create_app(*, provider_registry: ProviderRegistry | None = None) -> FastAPI:
     """Create the FastAPI application."""
     app = FastAPI(
         title="Router-Maestro",
@@ -202,7 +206,9 @@ def create_app() -> FastAPI:
     )
     app.state.http_metrics = create_http_metrics()
     app.state.runtime_config_repository = RuntimeConfigRepository()
-    app.state.router_owner = RouterOwner()
+    registry = provider_registry or default_provider_registry()
+    app.state.provider_registry = registry
+    app.state.router_owner = RouterOwner(provider_registry=registry)
     app.state.reasoning_capsule_codec = None
     app.add_exception_handler(
         RequestValidationError,
@@ -231,7 +237,6 @@ def create_app() -> FastAPI:
 
     # Include routers with API key verification
     app.include_router(chat_router, dependencies=[Depends(verify_api_key)])
-    app.include_router(files_router, dependencies=[Depends(verify_api_key)])
     app.include_router(models_router, dependencies=[Depends(verify_api_key)])
     app.include_router(responses_router, dependencies=[Depends(verify_api_key)])
     app.include_router(openai_responses_beta_router, dependencies=[Depends(verify_api_key)])
@@ -239,6 +244,7 @@ def create_app() -> FastAPI:
     app.include_router(anthropic_beta_router, dependencies=[Depends(verify_api_key)])
     app.include_router(gemini_router, dependencies=[Depends(verify_api_key)])
     app.include_router(admin_router, dependencies=[Depends(verify_api_key)])
+    mount_provider_endpoints(app, registry)
 
     @app.get("/")
     async def root():

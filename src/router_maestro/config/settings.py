@@ -15,9 +15,9 @@ from router_maestro.config.contexts import ContextsConfig
 from router_maestro.config.paths import CONTEXTS_FILE, PRIORITIES_FILE, PROVIDERS_FILE
 from router_maestro.config.priorities import PrioritiesConfig
 from router_maestro.config.providers import (
-    RESERVED_PROVIDER_NAMES,
     CustomProviderConfig,
     ProvidersConfig,
+    reserved_provider_names,
 )
 from router_maestro.routing.model_ref import validate_provider_id
 
@@ -173,7 +173,7 @@ def load_providers_config() -> ProvidersConfig:
             continue
 
         canonical_name = provider_name.casefold()
-        if canonical_name in RESERVED_PROVIDER_NAMES:
+        if canonical_name in reserved_provider_names():
             logger.warning(
                 "Skipping custom provider %r: provider_id:reserved_provider_name",
                 provider_name,

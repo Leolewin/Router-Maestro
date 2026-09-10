@@ -42,6 +42,7 @@ FALLBACK_METADATA_WARNING = "defaulting to fallback metadata"
 ANSI_ESCAPE = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
 CAPSULE_PATTERN = re.compile(r"rmr1\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+")
 TOKEN_PATTERN = re.compile(r"\bsk-[A-Za-z0-9_-]{8,}\b")
+OPAQUE_ITEM_ID_PATTERN = re.compile(r"\bitem_id=[^\s]+")
 HTTP_400_PATTERN = re.compile(
     r"(?:status(?:_code)?\D{0,8}|api error:\s*|http(?:/\d(?:\.\d)?)?\s+)400\b",
     re.I,
@@ -491,6 +492,7 @@ def build_codex_command(
             "--ignore-user-config",
             "--ignore-rules",
             "--json",
+            "--skip-git-repo-check",
         ]
     command.extend(_codex_config_args(runtime))
     command.extend(["-m", model, "-o", str(output_path)])
@@ -925,6 +927,7 @@ def _sanitize_json(value: Any, *, secret: str | None) -> Any:
 def _sanitize_text(value: str, *, secret: str | None) -> str:
     sanitized = value.replace(secret, "[redacted-api-key]") if secret else value
     sanitized = CAPSULE_PATTERN.sub("[redacted-capsule]", sanitized)
+    sanitized = OPAQUE_ITEM_ID_PATTERN.sub("item_id=[redacted]", sanitized)
     return TOKEN_PATTERN.sub("[redacted-token]", sanitized)
 
 

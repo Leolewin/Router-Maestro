@@ -4,7 +4,7 @@ import asyncio
 import logging
 
 import httpx
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Response
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request, Response
 
 from router_maestro.auth import (
     ApiKeyCredential,
@@ -27,6 +27,7 @@ from router_maestro.config.repository import (
     RuntimeConfigSnapshot,
 )
 from router_maestro.config.settings import load_providers_config
+from router_maestro.providers.registry import ProviderRegistry
 from router_maestro.routing.model_ref import catalog_model_public_id
 from router_maestro.routing.router import Router
 from router_maestro.server.dependencies import (
@@ -167,9 +168,12 @@ async def list_auth() -> AuthListResponse:
 
 
 @router.get("/auth/providers", response_model=AuthProviderDefinitionsResponse)
-def list_auth_providers() -> AuthProviderDefinitionsResponse:
+def list_auth_providers(request: Request) -> AuthProviderDefinitionsResponse:
     """List non-secret authentication definitions configured on this server."""
-    definitions = provider_auth_definitions(load_providers_config())
+    registry = getattr(request.app.state, "provider_registry", None)
+    definitions = provider_auth_definitions(
+        load_providers_config(), registry if isinstance(registry, ProviderRegistry) else None
+    )
     return AuthProviderDefinitionsResponse(
         providers=[
             AuthProviderDefinitionInfo(

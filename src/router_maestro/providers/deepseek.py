@@ -27,8 +27,10 @@ from router_maestro.providers.http_executor import SharedHttpExecutor
 from router_maestro.providers.openai_base import OpenAIChatProvider, _request_audit
 from router_maestro.routing.capabilities import Feature, Operation, ProviderCapabilities
 from router_maestro.routing.model_ref import ModelRef
+from router_maestro.routing.transport_policy import TransportPolicy
 from router_maestro.utils import get_logger
 from router_maestro.utils.reasoning import budget_to_effort
+from router_maestro.utils.token_config import count_tokens_via_anthropic_api
 
 logger = get_logger("providers.deepseek")
 
@@ -117,6 +119,11 @@ class DeepSeekProvider(OpenAIChatProvider):
 
     name = "deepseek"
 
+    @property
+    def transport_policy(self) -> TransportPolicy:
+        """Allow capability fallback, but never replay a failed native attempt."""
+        return TransportPolicy(recover_request_rejections=False)
+
     def __init__(self, base_url: str = DEEPSEEK_API_URL) -> None:
         super().__init__(base_url=base_url, logger=logger)
         self.auth_manager = AuthManager()
@@ -164,46 +171,6 @@ class DeepSeekProvider(OpenAIChatProvider):
         )
         self._generation_bindings = bindings
         return bindings
-
-    def transport_preferences(
-        self,
-        ingress_protocol: WireProtocol | None = None,
-    ) -> tuple[str, ...]:
-        """Prefer identity transports; convert Gemini requests through Chat."""
-        preferences = {
-            WireProtocol.ANTHROPIC_MESSAGES: (
-                DEEPSEEK_ANTHROPIC_MESSAGES_BINDING,
-                DEEPSEEK_OPENAI_RESPONSES_BINDING,
-                DEEPSEEK_OPENAI_CHAT_BINDING,
-            ),
-            WireProtocol.OPENAI_CHAT: (
-                DEEPSEEK_OPENAI_CHAT_BINDING,
-                DEEPSEEK_OPENAI_RESPONSES_BINDING,
-                DEEPSEEK_ANTHROPIC_MESSAGES_BINDING,
-            ),
-            WireProtocol.OPENAI_RESPONSES: (
-                DEEPSEEK_OPENAI_RESPONSES_BINDING,
-                DEEPSEEK_OPENAI_CHAT_BINDING,
-                DEEPSEEK_ANTHROPIC_MESSAGES_BINDING,
-            ),
-            WireProtocol.GEMINI: (
-                DEEPSEEK_OPENAI_CHAT_BINDING,
-                DEEPSEEK_OPENAI_RESPONSES_BINDING,
-                DEEPSEEK_ANTHROPIC_MESSAGES_BINDING,
-            ),
-        }
-        if ingress_protocol is None:
-            return tuple(binding.id for binding in self.bindings())
-        return preferences[ingress_protocol]
-
-    def transport_candidates(self, ingress_protocol: WireProtocol) -> tuple[str, ...]:
-        """Use native identity paths and reserve Chat conversion for Gemini."""
-        return {
-            WireProtocol.ANTHROPIC_MESSAGES: (DEEPSEEK_ANTHROPIC_MESSAGES_BINDING,),
-            WireProtocol.OPENAI_CHAT: (DEEPSEEK_OPENAI_CHAT_BINDING,),
-            WireProtocol.OPENAI_RESPONSES: (DEEPSEEK_OPENAI_RESPONSES_BINDING,),
-            WireProtocol.GEMINI: (DEEPSEEK_OPENAI_CHAT_BINDING,),
-        }[ingress_protocol]
 
     def model_aliases(self) -> Mapping[str, str]:
         """Pin DSH's official bare model IDs to this provider."""
@@ -307,6 +274,20 @@ class DeepSeekProvider(OpenAIChatProvider):
     def anthropic_base_url(self) -> str:
         """Base URL consumed by the shared native Messages token-count client."""
         return f"{self.base_url}/anthropic/v1"
+
+    async def count_tokens(
+        self, protocol: WireProtocol, payload: Mapping[str, Any], *, model: str
+    ) -> int | None:
+        if protocol is not WireProtocol.ANTHROPIC_MESSAGES:
+            return None
+        return await count_tokens_via_anthropic_api(
+            base_url=self.anthropic_base_url,
+            api_key=self._get_api_key(),
+            model=model,
+            messages=payload.get("messages", []),
+            system=payload.get("system"),
+            tools=payload.get("tools"),
+        )
 
     def _error_label(self) -> str:
         return "DeepSeek"

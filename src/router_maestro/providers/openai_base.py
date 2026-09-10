@@ -22,6 +22,7 @@ from router_maestro.providers.base import (
 )
 from router_maestro.providers.bindings import (
     OPENAI_COMPATIBLE_CHAT_BINDING,
+    OPENAI_COMPATIBLE_RESPONSES_BINDING,
     AttemptRequestContext,
     EndpointBinding,
     PreparedAttempt,
@@ -30,6 +31,7 @@ from router_maestro.providers.http_executor import ProviderHttpClientPool, Share
 from router_maestro.providers.tool_parsing import recover_tool_calls_from_content
 from router_maestro.routing.capabilities import Operation, ProviderCapabilities
 from router_maestro.routing.model_ref import ModelRef, validate_upstream_model_id
+from router_maestro.routing.transport_policy import COMPATIBILITY_TRANSPORT_POLICY, TransportPolicy
 from router_maestro.utils.reasoning import budget_to_effort, downgrade_for_upstream
 from router_maestro.utils.structured_output import output_format_to_response_format
 
@@ -44,6 +46,12 @@ def _request_audit():
 class OpenAIChatProvider(BaseProvider, ABC):
     """Shared OpenAI-compatible chat behavior."""
 
+    supports_responses: bool = False
+
+    @property
+    def transport_policy(self) -> TransportPolicy:
+        return COMPATIBILITY_TRANSPORT_POLICY
+
     def __init__(self, base_url: str, logger: Logger) -> None:
         self.base_url = base_url.rstrip("/")
         self._logger = logger
@@ -54,21 +62,35 @@ class OpenAIChatProvider(BaseProvider, ABC):
         await self._http_client_pool.close()
 
     def bindings(self) -> tuple[EndpointBinding, ...]:
-        """Expose the provider's Chat endpoint as a raw wire binding."""
+        """Expose Chat and any explicitly enabled Responses endpoint."""
         bindings = getattr(self, "_generation_bindings", None)
         if bindings is not None:
             return bindings
 
+        dialect = OpenAICompatibleProviderDialect(self)
+        executor = OpenAICompatibleHttpExecutor(self)
         binding = EndpointBinding(
             id=OPENAI_COMPATIBLE_CHAT_BINDING,
             protocol=WireProtocol.OPENAI_CHAT,
             capabilities=ProviderCapabilities(
                 operations=frozenset({Operation.CHAT, Operation.CHAT_STREAM})
             ),
-            dialect=OpenAICompatibleProviderDialect(self),
-            executor=OpenAICompatibleHttpExecutor(self),
+            dialect=dialect,
+            executor=executor,
         )
         bindings = (binding,)
+        if self.supports_responses:
+            bindings += (
+                EndpointBinding(
+                    id=OPENAI_COMPATIBLE_RESPONSES_BINDING,
+                    protocol=WireProtocol.OPENAI_RESPONSES,
+                    capabilities=ProviderCapabilities(
+                        operations=frozenset({Operation.RESPONSES, Operation.RESPONSES_STREAM})
+                    ),
+                    dialect=dialect,
+                    executor=executor,
+                ),
+            )
         self._generation_bindings = bindings
         return bindings
 
@@ -461,8 +483,14 @@ class OpenAIChatProvider(BaseProvider, ABC):
                 )
 
 
+_OPENAI_BINDING_SPECS = {
+    OPENAI_COMPATIBLE_CHAT_BINDING: (WireProtocol.OPENAI_CHAT, "/chat/completions"),
+    OPENAI_COMPATIBLE_RESPONSES_BINDING: (WireProtocol.OPENAI_RESPONSES, "/responses"),
+}
+
+
 class OpenAICompatibleProviderDialect:
-    """Copy-on-write preparation for an OpenAI-compatible Chat endpoint."""
+    """Isolated wire preparation for OpenAI-compatible generation endpoints."""
 
     id = "openai-compatible"
 
@@ -480,17 +508,20 @@ class OpenAICompatibleProviderDialect:
         request_context: AttemptRequestContext,
     ) -> PreparedAttempt:
         del request_context
-        if binding_id != OPENAI_COMPATIBLE_CHAT_BINDING:
+        if binding_id not in _OPENAI_BINDING_SPECS:
             raise ValueError(f"Unknown OpenAI-compatible binding {binding_id!r}")
-        if protocol is not WireProtocol.OPENAI_CHAT:
-            raise ValueError("OpenAI-compatible Chat binding requires the Chat wire protocol")
+        expected_protocol, path = _OPENAI_BINDING_SPECS[binding_id]
+        if protocol is not expected_protocol:
+            raise ValueError("OpenAI-compatible binding protocol does not match its binding ID")
+        if protocol is WireProtocol.OPENAI_RESPONSES and not self.provider.supports_responses:
+            raise ValueError("OpenAI-compatible Responses transport is not enabled")
         if model.provider != self.provider.name:
             raise ValueError("OpenAI-compatible attempt model belongs to another provider")
 
         body = deepcopy(dict(payload))
         body["model"] = model.upstream_id
         body["stream"] = stream
-        if stream:
+        if stream and protocol is WireProtocol.OPENAI_CHAT:
             stream_options = body.get("stream_options")
             if stream_options is None:
                 normalized_stream_options: dict[str, Any] = {}
@@ -510,7 +541,7 @@ class OpenAICompatibleProviderDialect:
             binding_id=binding_id,
             protocol=protocol,
             model=model,
-            url=f"{self.provider.base_url}/chat/completions",
+            url=f"{self.provider.base_url}{path}",
             payload=body,
             headers=self.provider._get_headers(),
             stream=stream,
@@ -530,14 +561,20 @@ class OpenAICompatibleHttpExecutor(SharedHttpExecutor):
         return data == "[DONE]"
 
     def _validate_attempt(self, attempt: PreparedAttempt, *, stream: bool) -> None:
-        if attempt.binding_id != OPENAI_COMPATIBLE_CHAT_BINDING:
+        if attempt.binding_id not in _OPENAI_BINDING_SPECS:
             raise ValueError("OpenAI-compatible executor received an unknown binding")
-        if attempt.protocol is not WireProtocol.OPENAI_CHAT:
-            raise ValueError("OpenAI-compatible executor requires the Chat wire protocol")
+        expected_protocol, _ = _OPENAI_BINDING_SPECS[attempt.binding_id]
+        if attempt.protocol is not expected_protocol:
+            raise ValueError("OpenAI-compatible executor received a different wire protocol")
+        if (
+            attempt.protocol is WireProtocol.OPENAI_RESPONSES
+            and not self.provider.supports_responses
+        ):
+            raise ValueError("OpenAI-compatible Responses transport is not enabled")
         if attempt.model.provider != self.provider.name:
             raise ValueError("OpenAI-compatible executor received another provider's model")
         if attempt.method != "POST":
-            raise ValueError("OpenAI-compatible Chat binding requires POST")
+            raise ValueError("OpenAI-compatible generation binding requires POST")
         if attempt.stream is not stream:
             raise ValueError("OpenAI-compatible attempt stream mode does not match execution")
 

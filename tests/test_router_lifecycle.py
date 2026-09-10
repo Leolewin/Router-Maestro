@@ -884,26 +884,31 @@ def test_catalog_effort_lookup_returns_a_defensive_copy() -> None:
 
 
 def test_router_custom_provider_construction_delegates_credential_policy(monkeypatch) -> None:
-    provider_config = object()
+    from types import SimpleNamespace
+
+    from router_maestro.config.providers import CustomProviderConfig
+    from router_maestro.providers.registry import ProviderRegistry
+
+    provider_config = CustomProviderConfig(baseURL="https://local.example")
     repository = object()
-    expected_provider = object()
+    expected_provider = cast(BaseProvider, SimpleNamespace(name="local-llm"))
     observed: dict[str, object] = {}
 
     class FakeRepository:
         def __new__(cls):
             return repository
 
-    def create(provider_name, config, *, credential_repository):
+    def create(provider_name, provider_config, *, credential_repository):
         observed.update(
             provider_name=provider_name,
-            config=config,
+            config=provider_config,
             credential_repository=credential_repository,
         )
         return expected_provider
 
     monkeypatch.setattr("router_maestro.auth.repository.CredentialRepository", FakeRepository)
-    monkeypatch.setattr("router_maestro.providers.custom_factory.create_custom_provider", create)
     router = Router.__new__(Router)
+    router.provider_registry = ProviderRegistry(configured_factories={"openai-compatible": create})
 
     provider = router._create_custom_provider("local-llm", provider_config)
 

@@ -3,13 +3,20 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import cast
+from types import SimpleNamespace
+from typing import Any, cast
 
 import pytest
 
 from router_maestro.protocols import FrozenJsonValue, OpaqueState, WireProtocol
 from router_maestro.protocols.openai_responses import OpenAIResponsesRuntime
-from router_maestro.providers.bindings import COPILOT_OPENAI_RESPONSES_BINDING
+from router_maestro.providers.bindings import (
+    COPILOT_OPENAI_RESPONSES_BINDING,
+    EndpointBinding,
+    ProtocolRuntimeOptions,
+)
+from router_maestro.routing.capabilities import Operation, ProviderCapabilities
+from router_maestro.routing.router import Router
 from router_maestro.runtime.reasoning_capsule import ReasoningCapsuleCodec
 from router_maestro.server.protocols.runtime_factory import ProtocolRuntimeFactory
 
@@ -22,6 +29,12 @@ def _factory() -> ProtocolRuntimeFactory:
                 "github-copilot",
                 COPILOT_OPENAI_RESPONSES_BINDING,
             ): WireProtocol.OPENAI_RESPONSES
+        },
+        {
+            ("github-copilot", COPILOT_OPENAI_RESPONSES_BINDING): ProtocolRuntimeOptions(
+                allow_per_event_response_ids=True,
+                defer_intermediate_item_ids=True,
+            )
         },
     )
 
@@ -161,3 +174,48 @@ def test_responses_id_quirk_is_not_enabled_for_other_provider_bindings() -> None
     assert isinstance(runtime, OpenAIResponsesRuntime)
     assert runtime.allow_per_event_response_ids is False
     assert runtime.defer_intermediate_item_ids is False
+
+
+@pytest.mark.parametrize(
+    "second_protocol", [WireProtocol.OPENAI_CHAT, WireProtocol.OPENAI_RESPONSES]
+)
+def test_duplicate_binding_provenance_is_rejected_before_runtime_construction(second_protocol):
+    first = EndpointBinding(
+        "duplicate",
+        WireProtocol.OPENAI_RESPONSES,
+        ProviderCapabilities(operations=frozenset({Operation.RESPONSES})),
+    )
+    second = EndpointBinding("duplicate", second_protocol, first.capabilities)
+    provider = SimpleNamespace(bindings=lambda: (first, second))
+    router = SimpleNamespace(providers={"example": provider})
+    with pytest.raises(ValueError, match="duplicate binding"):
+        ProtocolRuntimeFactory.for_router(
+            cast(Router, router), ReasoningCapsuleCodec(bytes([22]) * 32)
+        )
+
+
+@pytest.mark.parametrize(
+    "field",
+    ["allow_reasoning_opaque", "allow_per_event_response_ids", "defer_intermediate_item_ids"],
+)
+def test_runtime_options_do_not_accept_truthy_non_boolean_values(field):
+    with pytest.raises(TypeError, match="booleans"):
+        ProtocolRuntimeOptions(**cast(dict[str, Any], {field: "true"}))
+
+
+@pytest.mark.parametrize(
+    ("protocol", "options"),
+    [
+        (WireProtocol.OPENAI_RESPONSES, ProtocolRuntimeOptions(allow_reasoning_opaque=True)),
+        (WireProtocol.OPENAI_CHAT, ProtocolRuntimeOptions(allow_per_event_response_ids=True)),
+        (WireProtocol.ANTHROPIC_MESSAGES, ProtocolRuntimeOptions(defer_intermediate_item_ids=True)),
+    ],
+)
+def test_codec_deviations_cannot_be_attached_to_an_unrelated_protocol(protocol, options):
+    with pytest.raises(ValueError, match="binding"):
+        EndpointBinding(
+            "invalid-options",
+            protocol,
+            ProviderCapabilities(operations=frozenset()),
+            runtime_options=options,
+        )

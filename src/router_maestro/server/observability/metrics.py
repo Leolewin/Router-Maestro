@@ -1,8 +1,8 @@
 """Prometheus metrics helpers for Router-Maestro server observability."""
 
-from collections.abc import Mapping
+from collections.abc import Callable, Iterator, Mapping
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from prometheus_client import (
     CONTENT_TYPE_LATEST as PROMETHEUS_CONTENT_TYPE_LATEST,
@@ -100,16 +100,22 @@ def path_template_from_scope(scope: Mapping[str, Any]) -> str:
         router = getattr(app, "router", None)
     routes = getattr(router, "routes", ())
     partial_path = None
-    for candidate in routes:
-        match, _child_scope = candidate.matches(scope)
-        if match == Match.FULL:
-            candidate_path = getattr(candidate, "path", None)
-            if isinstance(candidate_path, str) and candidate_path:
-                return candidate_path
-        if match == Match.PARTIAL and partial_path is None:
-            candidate_path = getattr(candidate, "path", None)
-            if isinstance(candidate_path, str) and candidate_path:
-                partial_path = candidate_path
+    for route in routes:
+        # Lazy FastAPI includes do not expose the matched path themselves.
+        contexts = getattr(route, "effective_route_contexts", None)
+        candidates = (
+            cast(Callable[[], Iterator[Any]], contexts)() if callable(contexts) else (route,)
+        )
+        for candidate in candidates:
+            match, _child_scope = candidate.matches(scope)
+            if match == Match.FULL:
+                candidate_path = getattr(candidate, "path", None)
+                if isinstance(candidate_path, str) and candidate_path:
+                    return candidate_path
+            if match == Match.PARTIAL and partial_path is None:
+                candidate_path = getattr(candidate, "path", None)
+                if isinstance(candidate_path, str) and candidate_path:
+                    partial_path = candidate_path
 
     if partial_path is not None:
         return partial_path

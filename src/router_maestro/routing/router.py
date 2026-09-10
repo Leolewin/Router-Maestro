@@ -14,15 +14,11 @@ from router_maestro.config import (
     load_providers_config,
 )
 from router_maestro.providers import (
-    AnthropicProvider,
     BaseProvider,
     ChatRequest,
     ChatResponse,
     ChatStreamChunk,
-    CopilotProvider,
-    DeepSeekProvider,
     ModelInfo,
-    OpenAIProvider,
     ProviderError,
     ProviderFailureKind,
     RequestOptionError,
@@ -30,6 +26,7 @@ from router_maestro.providers import (
     ResponsesResponse,
     ResponsesStreamChunk,
 )
+from router_maestro.providers.registry import ProviderRegistry, default_provider_registry
 from router_maestro.routing.attempts import (
     AttemptLedger,
     AttemptRecord,
@@ -186,12 +183,15 @@ class RouterOwner[RouterT]:
     def __init__(
         self,
         factory: Callable[[object | None], RouterT | Awaitable[RouterT]] | None = None,
+        *,
+        provider_registry: ProviderRegistry | None = None,
     ) -> None:
         self._factory = factory or cast(
             Callable[[object | None], RouterT],
             lambda snapshot: Router(
                 config_snapshot=snapshot,
                 managed_generation=True,
+                provider_registry=provider_registry,
             ),
         )
         self._operation_lock = asyncio.Lock()
@@ -498,9 +498,11 @@ class Router:
         config_snapshot: object | None = None,
         *,
         managed_generation: bool = False,
+        provider_registry: ProviderRegistry | None = None,
     ) -> None:
         self._config_snapshot = config_snapshot
         self._managed_generation = managed_generation
+        self.provider_registry = provider_registry or default_provider_registry()
         self._close_lock = asyncio.Lock()
         self._closed_provider_ids: set[int] = set()
         self._closed = False
@@ -525,13 +527,21 @@ class Router:
     def _load_providers(self) -> None:
         """Load providers from configuration."""
         custom_providers_config = load_providers_config()
+        conflicts = self.provider_registry.provider_ids.intersection(
+            name.casefold() for name in custom_providers_config.providers
+        )
+        if conflicts:
+            raise ValueError(f"configured provider conflicts with a plugin: {sorted(conflicts)}")
         old_providers = self.providers
         self.providers = {}
 
-        self._add_builtin_provider("github-copilot", CopilotProvider, old_providers)
-        self._add_builtin_provider("openai", OpenAIProvider, old_providers)
-        self._add_builtin_provider("anthropic", AnthropicProvider, old_providers)
-        self._add_builtin_provider("deepseek", DeepSeekProvider, old_providers)
+        for plugin in self.provider_registry.plugins:
+            provider = old_providers.get(plugin.id)
+            if provider is None:
+                provider = plugin.factory()
+            if provider.name != plugin.id:
+                raise ValueError("provider plugin factory returned a different provider ID")
+            self.providers[plugin.id] = provider
 
         # Load custom providers from providers.json
         for provider_name, provider_config in custom_providers_config.providers.items():
@@ -542,33 +552,20 @@ class Router:
         self._providers_ttl.set(True)
         logger.info("Loaded %d providers", len(self.providers))
 
-    def _add_builtin_provider(
-        self,
-        name: str,
-        provider_cls: type[BaseProvider],
-        old_providers: dict[str, BaseProvider],
-    ) -> None:
-        existing = old_providers.get(name)
-        if isinstance(existing, provider_cls):
-            self.providers[name] = existing
-        else:
-            self.providers[name] = provider_cls()
-        logger.debug("Loaded built-in provider: %s", name)
-
     def _create_custom_provider(
         self,
         provider_name: str,
         provider_config,
     ) -> BaseProvider | None:
         from router_maestro.auth.repository import CredentialRepository
-        from router_maestro.providers.custom_factory import create_custom_provider
 
-        provider = create_custom_provider(
+        registry = getattr(self, "provider_registry", None) or default_provider_registry()
+        provider = registry.create_configured(
             provider_name,
             provider_config,
             credential_repository=CredentialRepository(),
         )
-        if provider is None and provider_config.type != "openai-compatible":
+        if provider is None and not registry.supports_configured_type(provider_config.type):
             logger.warning(
                 "Unknown provider type '%s' for %s; skipping",
                 provider_config.type,

@@ -76,4 +76,5 @@ def create_custom_provider(
         api_key=credential.api_key,
         models={model_id: config.name for model_id, config in provider_config.models.items()},
         allow_unauthenticated=credential.source is CustomCredentialSource.ANONYMOUS,
+        responses=provider_config.options.responses,
     )

@@ -38,18 +38,26 @@ from router_maestro.providers.bindings import (
     LEGACY_OPENAI_CHAT_BINDING,
     LEGACY_OPENAI_RESPONSES_BINDING,
     OPENAI_COMPATIBLE_CHAT_BINDING,
+    OPENAI_COMPATIBLE_RESPONSES_BINDING,
     AttemptRequestContext,
     EndpointBinding,
     HttpExecutor,
     PreparedAttempt,
+    ProtocolRuntimeOptions,
     ProviderDialect,
 )
 from router_maestro.providers.copilot import CopilotProvider
 from router_maestro.providers.deepseek import DeepSeekProvider
+from router_maestro.providers.endpoints import ProviderEndpoint
 from router_maestro.providers.http_executor import ProviderHttpClientPool, SharedHttpExecutor
 from router_maestro.providers.openai import OpenAIProvider
 from router_maestro.providers.openai_base import OpenAIChatProvider
 from router_maestro.providers.openai_compat import OpenAICompatibleProvider
+from router_maestro.providers.registry import (
+    ProviderPlugin,
+    ProviderRegistry,
+    default_provider_registry,
+)
 
 __all__ = [
     # Constants
@@ -87,6 +95,11 @@ __all__ = [
     "HttpExecutor",
     "PreparedAttempt",
     "ProviderDialect",
+    "ProtocolRuntimeOptions",
+    "ProviderEndpoint",
+    "ProviderPlugin",
+    "ProviderRegistry",
+    "default_provider_registry",
     "ProviderHttpClientPool",
     "SharedHttpExecutor",
     "LEGACY_OPENAI_CHAT_BINDING",
@@ -96,6 +109,7 @@ __all__ = [
     "COPILOT_OPENAI_CHAT_BINDING",
     "COPILOT_OPENAI_RESPONSES_BINDING",
     "OPENAI_COMPATIBLE_CHAT_BINDING",
+    "OPENAI_COMPATIBLE_RESPONSES_BINDING",
     # Providers
     "CopilotProvider",
     "OpenAIProvider",

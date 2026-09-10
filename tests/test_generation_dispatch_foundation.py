@@ -522,8 +522,8 @@ async def test_max_retries_limits_model_switches_not_provider_transports() -> No
         (
             WireProtocol.GEMINI,
             (
-                COPILOT_OPENAI_RESPONSES_BINDING,
                 COPILOT_OPENAI_CHAT_BINDING,
+                COPILOT_OPENAI_RESPONSES_BINDING,
                 COPILOT_ANTHROPIC_MESSAGES_BINDING,
             ),
             (

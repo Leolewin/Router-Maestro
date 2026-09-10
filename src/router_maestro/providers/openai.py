@@ -18,6 +18,7 @@ class OpenAIProvider(OpenAIChatProvider):
     """OpenAI official provider."""
 
     name = "openai"
+    supports_responses = True
 
     def __init__(self, base_url: str = OPENAI_API_URL) -> None:
         super().__init__(base_url=base_url, logger=logger)

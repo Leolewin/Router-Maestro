@@ -19,10 +19,7 @@ from router_maestro.protocols import (
 )
 from router_maestro.protocols.openai_chat import OpenAIChatRuntime
 from router_maestro.protocols.openai_responses import OpenAIResponsesRuntime
-from router_maestro.providers.bindings import (
-    COPILOT_OPENAI_CHAT_BINDING,
-    COPILOT_OPENAI_RESPONSES_BINDING,
-)
+from router_maestro.providers.bindings import ProtocolRuntimeOptions
 from router_maestro.runtime.reasoning_capsule import (
     ReasoningCapsuleCodec,
     ReasoningCapsuleError,
@@ -43,9 +40,11 @@ class ProtocolRuntimeFactory:
         self,
         capsule_codec: ReasoningCapsuleCodec,
         binding_protocols: Mapping[tuple[str, str], WireProtocol],
+        binding_options: Mapping[tuple[str, str], ProtocolRuntimeOptions] | None = None,
     ) -> None:
         self._capsule_codec = capsule_codec
         self._binding_protocols = dict(binding_protocols)
+        self._binding_options = dict(binding_options or {})
 
     @classmethod
     def for_router(
@@ -55,17 +54,17 @@ class ProtocolRuntimeFactory:
     ) -> ProtocolRuntimeFactory:
         """Snapshot binding provenance without invoking model discovery."""
         bindings: dict[tuple[str, str], WireProtocol] = {}
+        options: dict[tuple[str, str], ProtocolRuntimeOptions] = {}
         for provider_name, provider in router.providers.items():
             for binding in provider.bindings():
                 key = (provider_name, binding.id)
-                previous = bindings.get(key)
-                if previous is not None and previous is not binding.protocol:
+                if key in bindings:
                     raise ValueError(
-                        f"provider {provider_name!r} reuses binding {binding.id!r} "
-                        "for multiple protocols"
+                        f"provider {provider_name!r} declares duplicate binding {binding.id!r}"
                     )
                 bindings[key] = binding.protocol
-        return cls(capsule_codec, bindings)
+                options[key] = binding.runtime_options
+        return cls(capsule_codec, bindings, options)
 
     def ingress(
         self,
@@ -114,6 +113,11 @@ class ProtocolRuntimeFactory:
         provider: str | None,
         binding: str | None,
     ) -> ProtocolRuntime:
+        options = (
+            self._binding_options.get((provider, binding), ProtocolRuntimeOptions())
+            if provider is not None and binding is not None
+            else ProtocolRuntimeOptions()
+        )
         if protocol is WireProtocol.ANTHROPIC_MESSAGES:
             return AnthropicMessagesRuntime(
                 origin_provider=provider,
@@ -125,19 +129,14 @@ class ProtocolRuntimeFactory:
                 origin_provider=provider,
                 origin_binding=binding,
                 default_model=model,
-                allow_reasoning_opaque=(
-                    provider == "github-copilot" and binding == COPILOT_OPENAI_CHAT_BINDING
-                ),
+                allow_reasoning_opaque=options.allow_reasoning_opaque,
             )
         if protocol is WireProtocol.OPENAI_RESPONSES:
-            copilot_obfuscated_stream_ids = (
-                provider == "github-copilot" and binding == COPILOT_OPENAI_RESPONSES_BINDING
-            )
             return OpenAIResponsesRuntime(
                 provider_name=provider,
                 binding_id=binding,
-                allow_per_event_response_ids=copilot_obfuscated_stream_ids,
-                defer_intermediate_item_ids=copilot_obfuscated_stream_ids,
+                allow_per_event_response_ids=options.allow_per_event_response_ids,
+                defer_intermediate_item_ids=options.defer_intermediate_item_ids,
             )
         if protocol is WireProtocol.GEMINI:
             return GeminiRuntime(

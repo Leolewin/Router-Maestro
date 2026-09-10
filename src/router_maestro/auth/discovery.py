@@ -5,10 +5,13 @@ from __future__ import annotations
 from collections.abc import Mapping
 from dataclasses import dataclass
 from enum import StrEnum
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from router_maestro.auth.storage import AuthType
 from router_maestro.config.providers import ProvidersConfig, default_custom_api_key_env
+
+if TYPE_CHECKING:
+    from router_maestro.providers.registry import ProviderRegistry
 
 
 class ProviderAuthSource(StrEnum):
@@ -48,42 +51,14 @@ class ProviderAuthDefinition:
         )
 
 
-BUILTIN_PROVIDER_AUTH_DEFINITIONS = (
-    ProviderAuthDefinition(
-        provider="github-copilot",
-        display_name="GitHub Copilot",
-        auth_type=AuthType.OAUTH,
-        credential_required=True,
-        source=ProviderAuthSource.BUILTIN,
-    ),
-    ProviderAuthDefinition(
-        provider="openai",
-        display_name="OpenAI",
-        auth_type=AuthType.API_KEY,
-        credential_required=True,
-        source=ProviderAuthSource.BUILTIN,
-    ),
-    ProviderAuthDefinition(
-        provider="anthropic",
-        display_name="Anthropic",
-        auth_type=AuthType.API_KEY,
-        credential_required=True,
-        source=ProviderAuthSource.BUILTIN,
-    ),
-    ProviderAuthDefinition(
-        provider="deepseek",
-        display_name="DeepSeek",
-        auth_type=AuthType.API_KEY,
-        credential_required=True,
-        source=ProviderAuthSource.BUILTIN,
-    ),
-)
-
-
 def provider_auth_definitions(
     config: ProvidersConfig,
+    registry: ProviderRegistry | None = None,
 ) -> tuple[ProviderAuthDefinition, ...]:
     """Return stable builtin-first definitions for one server configuration."""
+    from router_maestro.providers.registry import default_provider_registry
+
+    registry = registry or default_provider_registry()
     custom = []
     for provider_name in sorted(config.providers, key=str.casefold):
         provider = config.providers[provider_name]
@@ -99,4 +74,12 @@ def provider_auth_definitions(
                 ),
             )
         )
-    return (*BUILTIN_PROVIDER_AUTH_DEFINITIONS, *custom)
+    return (*registry.auth_definitions, *custom)
+
+
+def __getattr__(name: str) -> Any:
+    if name == "BUILTIN_PROVIDER_AUTH_DEFINITIONS":
+        from router_maestro.providers.registry import default_provider_registry
+
+        return default_provider_registry().auth_definitions
+    raise AttributeError(name)

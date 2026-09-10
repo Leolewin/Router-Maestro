@@ -281,16 +281,20 @@ class RequestContextMiddleware:
         lease = await owner.acquire()
         request_id = scope.setdefault("state", {}).get("request_id", "")
         lease_snapshot = getattr(lease, "config_snapshot", None)
-        context = RequestContext.create(
-            request_id=request_id,
-            config_snapshot=(
-                cast(RuntimeConfigSnapshot, lease_snapshot)
-                if lease_snapshot is not None
-                else snapshot
-            ),
-            lease=lease,
-        )
-        context.bind_request(scope)
+        try:
+            context = RequestContext.create(
+                request_id=request_id,
+                config_snapshot=(
+                    cast(RuntimeConfigSnapshot, lease_snapshot)
+                    if lease_snapshot is not None
+                    else snapshot
+                ),
+                lease=lease,
+            )
+            context.bind_request(scope)
+        except BaseException:
+            await _await_cleanup(asyncio.create_task(lease.release()))
+            raise
         scope["state"]["request_context"] = context
         token: Token[RequestContext | None] = _current_request_context.set(context)
         final_body_sent = False
