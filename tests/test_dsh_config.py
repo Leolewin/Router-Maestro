@@ -50,13 +50,13 @@ def _sol() -> dict:
 def _deepseek() -> dict:
     return {
         "provider": "deepseek",
-        "id": "deepseek/deepseek-v4-flash",
-        "name": "DeepSeek-V4-Flash",
+        "id": "deepseek/deepseek-flash",
+        "name": "DeepSeek-V4.1-Flash",
         "max_prompt_tokens": None,
         "max_output_tokens": 384_000,
         "max_context_window_tokens": 1_000_000,
         "context_window_options": [],
-        "feature_capabilities": {"vision": False},
+        "feature_capabilities": {"vision": True},
         "reasoning_effort_values": ["none", "low", "medium", "high", "xhigh", "max"],
     }
 
@@ -171,10 +171,10 @@ def test_dsh_writes_deepseek_total_context_window(tmp_path: Path) -> None:
     models = _load(path)["llm-pi-ai"]["providers"]["router-maestro"]["models"]
     assert models == [
         {
-            "id": "deepseek/deepseek-v4-flash",
-            "name": "DeepSeek-V4-Flash",
+            "id": "deepseek/deepseek-flash",
+            "name": "DeepSeek-V4.1-Flash",
             "contextWindow": 1_000_000,
-            "input": ["text"],
+            "input": ["text", "image"],
             "reasoningEfforts": {
                 "off": "none",
                 "low": "low",

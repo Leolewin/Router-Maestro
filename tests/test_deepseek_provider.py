@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from copy import deepcopy
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -11,7 +12,12 @@ import pytest
 
 from router_maestro.auth.storage import ApiKeyCredential
 from router_maestro.protocols import ConversionMode, RequestManifest, WireProtocol
-from router_maestro.providers.base import ModelInfo, ProviderError, ProviderFailureKind
+from router_maestro.providers.base import (
+    ModelInfo,
+    ProviderError,
+    ProviderFailureKind,
+    ProviderFailureSignal,
+)
 from router_maestro.providers.bindings import AttemptRequestContext
 from router_maestro.providers.deepseek import (
     DEEPSEEK_ANTHROPIC_MESSAGES_BINDING,
@@ -20,9 +26,12 @@ from router_maestro.providers.deepseek import (
     DeepSeekProvider,
 )
 from router_maestro.providers.handler import ProviderHandler
+from router_maestro.providers.http_executor import ProviderHttpClientPool
 from router_maestro.routing.capabilities import Feature, Operation
 from router_maestro.routing.generation_plan import GenerationCandidate
 from router_maestro.routing.model_ref import ModelRef
+from router_maestro.routing.router import Router
+from router_maestro.server.protocols.errors import protocol_error_response
 from router_maestro.server.routes import anthropic as anthropic_route
 from router_maestro.server.schemas.anthropic import (
     AnthropicCountTokensRequest,
@@ -38,7 +47,7 @@ def _provider() -> DeepSeekProvider:
     return provider
 
 
-def _candidate(provider: DeepSeekProvider, model_id: str = "deepseek-v4-flash"):
+def _candidate(provider: DeepSeekProvider, model_id: str = "deepseek-flash"):
     info = ModelInfo(id=model_id, name=model_id, provider=provider.name)
     return GenerationCandidate(
         model=ModelRef(provider.name, model_id),
@@ -55,9 +64,8 @@ async def _documented_models():
             json={
                 "object": "list",
                 "data": [
-                    {"id": "deepseek-v4-flash"},
+                    {"id": "deepseek-flash"},
                     {"id": "deepseek-v4-pro"},
-                    {"id": "deepseek-v4-flash-vision-exp"},
                 ],
             },
             request=request,
@@ -154,7 +162,7 @@ def test_deepseek_handler_prefers_native_transport_per_ingress(
 async def test_deepseek_chat_identity_preserves_dsh_body_and_safe_attribution_headers() -> None:
     provider = _provider()
     source = {
-        "model": "deepseek-v4-flash",
+        "model": "deepseek-flash",
         "messages": [
             {"role": "assistant", "content": "", "reasoning_content": "plan"},
             {"role": "user", "content": "continue"},
@@ -168,7 +176,7 @@ async def test_deepseek_chat_identity_preserves_dsh_body_and_safe_attribution_he
     original = deepcopy(source)
 
     attempt = await _binding(provider, WireProtocol.OPENAI_CHAT).prepare_attempt(
-        model=ModelRef("deepseek", "deepseek-v4-flash"),
+        model=ModelRef("deepseek", "deepseek-flash"),
         payload=source,
         stream=True,
         request_context=AttemptRequestContext(
@@ -259,14 +267,14 @@ async def test_deepseek_native_dialects_preserve_unknown_fields_and_rewrite_only
 async def test_deepseek_gemini_chat_conversion_removes_budget_and_maps_minimal_effort() -> None:
     provider = _provider()
     source = {
-        "model": "deepseek-v4-flash",
+        "model": "deepseek-flash",
         "messages": [{"role": "user", "content": "hello"}],
         "thinking": {"type": "enabled", "budget_tokens": 512},
         "reasoning_effort": "minimal",
     }
 
     attempt = await _binding(provider, WireProtocol.OPENAI_CHAT).prepare_attempt(
-        model=ModelRef("deepseek", "deepseek-v4-flash"),
+        model=ModelRef("deepseek", "deepseek-flash"),
         payload=source,
         stream=False,
         request_context=AttemptRequestContext(conversion_mode=ConversionMode.SEMANTIC_IR),
@@ -278,14 +286,14 @@ async def test_deepseek_gemini_chat_conversion_removes_budget_and_maps_minimal_e
 
 
 @pytest.mark.asyncio
-async def test_deepseek_live_catalog_gets_documented_v4_capabilities() -> None:
+async def test_deepseek_live_catalog_gets_documented_capabilities() -> None:
     models = await _documented_models()
 
     assert [model.id for model in models] == [
-        "deepseek-v4-flash",
+        "deepseek-flash",
         "deepseek-v4-pro",
-        "deepseek-v4-flash-vision-exp",
     ]
+    assert [model.name for model in models] == ["DeepSeek-V4.1-Flash", "DeepSeek-V4-Pro"]
     for model in models:
         assert model.provider == "deepseek"
         assert model.max_context_window_tokens == 1_000_000
@@ -309,8 +317,12 @@ async def test_deepseek_live_catalog_gets_documented_v4_capabilities() -> None:
             WireProtocol.OPENAI_CHAT.value: True,
             WireProtocol.OPENAI_RESPONSES.value: True,
         }
-    assert models[0].supports_vision is False
-    assert models[2].supports_vision is True
+    assert models[0].supports_vision is True
+    assert models[0].feature_capabilities[Feature.VISION.value] is True
+    assert models[0].feature_capabilities[Feature.FILES.value] is True
+    assert models[1].supports_vision is False
+    assert models[1].feature_capabilities[Feature.VISION.value] is False
+    assert models[1].feature_capabilities[Feature.FILES.value] is False
 
 
 @pytest.mark.asyncio
@@ -326,27 +338,170 @@ async def test_deepseek_catalog_falls_back_to_documented_models_on_transport_err
         models = await provider.list_models()
 
     assert [model.id for model in models] == [
-        "deepseek-v4-flash",
+        "deepseek-flash",
         "deepseek-v4-pro",
-        "deepseek-v4-flash-vision-exp",
     ]
 
 
-def test_deepseek_bare_model_aliases_are_provider_owned() -> None:
+def test_deepseek_current_and_retired_model_aliases_are_provider_owned() -> None:
     provider = _provider()
 
     assert provider.model_aliases() == {
-        "deepseek-v4-flash": "deepseek-v4-flash",
+        "deepseek-flash": "deepseek-flash",
         "deepseek-v4-pro": "deepseek-v4-pro",
-        "deepseek-v4-flash-vision-exp": "deepseek-v4-flash-vision-exp",
+        "deepseek-v4-flash": "deepseek-flash",
+        "deepseek-v4-flash-vision-exp": "deepseek-flash",
+        "deepseek/deepseek-v4-flash": "deepseek-flash",
+        "deepseek/deepseek-v4-flash-vision-exp": "deepseek-flash",
     }
+
+
+@pytest.mark.parametrize(
+    "model_id",
+    [
+        "deepseek-flash",
+        "deepseek-v4-flash",
+        "deepseek-v4-flash-vision-exp",
+        "deepseek/deepseek-v4-flash",
+        "deepseek/deepseek-v4-flash-vision-exp",
+    ],
+)
+def test_deepseek_flash_aliases_normalize_to_canonical_model(model_id: str) -> None:
+    router = Router.__new__(Router)
+    router.providers = {"deepseek": _provider()}
+    router._model_aliases = None
+
+    assert router._normalize_model_alias(model_id) == "deepseek/deepseek-flash"
+
+
+def test_deepseek_current_qualified_model_is_not_rewritten() -> None:
+    router = Router.__new__(Router)
+    router.providers = {"deepseek": _provider()}
+    router._model_aliases = None
+
+    assert router._normalize_model_alias("deepseek/deepseek-flash") == ("deepseek/deepseek-flash")
+
+
+@pytest.mark.parametrize(
+    ("status", "body", "expected"),
+    [
+        (
+            400,
+            b'{"error":{"message":"This model\'s maximum context length is 1048576 tokens. '
+            b"However, you requested 1048793 tokens (792793 in the messages, 256000 in the "
+            b'completion). Please reduce the length of the messages or completion.",'
+            b'"type":"invalid_request_error","code":"invalid_request_error"}}',
+            ProviderFailureSignal.CONTEXT_WINDOW_EXCEEDED,
+        ),
+        (
+            400,
+            b'{"error":{"message":"ordinary bad request",'
+            b'"type":"invalid_request_error","code":"invalid_request_error"}}',
+            None,
+        ),
+        (
+            400,
+            b'{"error":{"message":"This model\'s maximum context length is 10 tokens. '
+            b"However, you requested 11 tokens (9 in the messages, 2 in the completion). "
+            b'Please reduce the length of the messages or completion.",'
+            b'"type":"other","code":"invalid_request_error"}}',
+            None,
+        ),
+        (
+            400,
+            b'{"error":{"message":"This model\'s maximum context length is 10 tokens. '
+            b"However, you requested 9 tokens (7 in the messages, 2 in the completion). "
+            b'Please reduce the length of the messages or completion.",'
+            b'"type":"invalid_request_error","code":"invalid_request_error"}}',
+            None,
+        ),
+        (
+            400,
+            b'{"error":{"message":"This model\'s maximum context length is 10 tokens. '
+            b"However, you requested 12 tokens (9 in the messages, 2 in the completion). "
+            b'Please reduce the length of the messages or completion.",'
+            b'"type":"invalid_request_error","code":"invalid_request_error"}}',
+            None,
+        ),
+        (500, b'{"error":{"type":"invalid_request_error"}}', None),
+        (400, b"not-json", None),
+        (400, b"x" * (64 * 1024 + 1), None),
+    ],
+)
+def test_deepseek_context_overflow_signal_requires_exact_bounded_error(
+    status: int,
+    body: bytes,
+    expected: ProviderFailureSignal | None,
+) -> None:
+    assert DeepSeekProvider._failure_signal(status, body) is expected
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("stream", [False, True])
+async def test_deepseek_executor_maps_context_overflow_to_safe_signal(stream: bool) -> None:
+    body = (
+        b'{"error":{"message":"This model\'s maximum context length is 1048576 tokens. '
+        b"However, you requested 1048793 tokens (792793 in the messages, 256000 in the "
+        b'completion). Please reduce the length of the messages or completion.",'
+        b'"type":"invalid_request_error","code":"invalid_request_error"}}'
+    )
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(400, content=body, request=request)
+
+    client = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+    provider = _provider()
+    provider._http_client_pool = ProviderHttpClientPool(lambda: client)
+    binding = _binding(provider, WireProtocol.OPENAI_CHAT)
+    attempt = await binding.prepare_attempt(
+        model=ModelRef("deepseek", "deepseek-flash"),
+        payload={
+            "model": "deepseek-flash",
+            "messages": [{"role": "user", "content": "hello"}],
+            "stream": stream,
+        },
+        stream=stream,
+    )
+
+    try:
+        assert binding.executor is not None
+        with pytest.raises(ProviderError) as raised:
+            if stream:
+                async for _frame in binding.executor.execute_stream(attempt):
+                    pass
+            else:
+                await binding.executor.execute(attempt)
+    finally:
+        await provider.close()
+
+    error = raised.value
+    assert error.status_code == 400
+    assert error.upstream_status_code == 400
+    assert error.kind is ProviderFailureKind.CLIENT_REQUEST
+    assert error.retryable is False
+    assert error.signal is ProviderFailureSignal.CONTEXT_WINDOW_EXCEEDED
+    assert error.safe_message == "Request exceeds the selected model's context window"
+    assert "1048793" not in error.safe_message
+
+    response = protocol_error_response(error, "openai_chat")
+    response_body = bytes(response.body)
+    downstream = json.loads(response_body)
+    assert response.status_code == 400
+    assert response.headers["X-Router-Maestro-Error-Signal"] == "context_window_exceeded"
+    assert downstream["error"] == {
+        "message": "Request exceeds the selected model's context window",
+        "type": "invalid_request_error",
+        "param": None,
+        "code": "context_length_exceeded",
+    }
+    assert b"1048793" not in response_body
 
 
 @pytest.mark.asyncio
 async def test_deepseek_anthropic_count_tokens_uses_native_exact_endpoint() -> None:
     provider = _provider()
     request = AnthropicCountTokensRequest(
-        model="deepseek-v4-flash",
+        model="deepseek-flash",
         messages=[AnthropicUserMessage(content="hello")],
     )
 
@@ -368,7 +523,7 @@ async def test_deepseek_anthropic_count_tokens_uses_native_exact_endpoint() -> N
     exact_count.assert_awaited_once_with(
         base_url="https://deepseek.example/anthropic/v1",
         api_key="upstream-secret",
-        model="deepseek-v4-flash",
+        model="deepseek-flash",
         messages=[{"role": "user", "content": "hello"}],
         system=None,
         tools=None,

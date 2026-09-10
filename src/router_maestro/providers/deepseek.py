@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 from collections.abc import AsyncIterable, Mapping
 from copy import deepcopy
@@ -17,6 +18,7 @@ from router_maestro.providers.base import (
     ModelInfo,
     ProviderError,
     ProviderFailureKind,
+    ProviderFailureSignal,
 )
 from router_maestro.providers.bindings import (
     AttemptRequestContext,
@@ -40,6 +42,14 @@ DEEPSEEK_OPENAI_CHAT_BINDING = "deepseek-openai-chat"
 DEEPSEEK_OPENAI_RESPONSES_BINDING = "deepseek-openai-responses"
 DEEPSEEK_FILES_TIMEOUT = httpx.Timeout(connect=30.0, read=240.0, write=600.0, pool=30.0)
 _DEEPSEEK_FILE_ID_PATTERN = re.compile(r"file-api-[A-Za-z0-9._~-]+\Z")
+_DEEPSEEK_CONTEXT_OVERFLOW_MESSAGE = re.compile(
+    r"This model's maximum context length is (?P<limit>[1-9][0-9]*) tokens\. "
+    r"However, you requested (?P<requested>[1-9][0-9]*) tokens "
+    r"\((?P<messages>[0-9]+) in the messages, "
+    r"(?P<completion>[0-9]+) in the completion\)\. "
+    r"Please reduce the length of the messages or completion\."
+)
+_MAX_DEEPSEEK_ERROR_BODY_BYTES = 64 * 1024
 
 _DEEPSEEK_BINDING_SPECS = {
     DEEPSEEK_ANTHROPIC_MESSAGES_BINDING: (
@@ -50,14 +60,20 @@ _DEEPSEEK_BINDING_SPECS = {
     DEEPSEEK_OPENAI_RESPONSES_BINDING: (WireProtocol.OPENAI_RESPONSES, "/responses"),
 }
 _DEEPSEEK_MODEL_IDS = (
-    "deepseek-v4-flash",
+    "deepseek-flash",
     "deepseek-v4-pro",
-    "deepseek-v4-flash-vision-exp",
 )
 _DEEPSEEK_DISPLAY_NAMES = {
-    "deepseek-v4-flash": "DeepSeek-V4-Flash",
+    "deepseek-flash": "DeepSeek-V4.1-Flash",
     "deepseek-v4-pro": "DeepSeek-V4-Pro",
-    "deepseek-v4-flash-vision-exp": "DeepSeek-V4-Flash-Vision-Exp",
+}
+_DEEPSEEK_MODEL_ALIASES = {
+    "deepseek-flash": "deepseek-flash",
+    "deepseek-v4-pro": "deepseek-v4-pro",
+    "deepseek-v4-flash": "deepseek-flash",
+    "deepseek-v4-flash-vision-exp": "deepseek-flash",
+    "deepseek/deepseek-v4-flash": "deepseek-flash",
+    "deepseek/deepseek-v4-flash-vision-exp": "deepseek-flash",
 }
 _DEEPSEEK_CONTEXT_TOKENS = 1_000_000
 _DEEPSEEK_MAX_OUTPUT_TOKENS = 384_000
@@ -71,9 +87,9 @@ _DEEPSEEK_DSH_HEADERS = (
 
 
 def _model_info(model_id: str) -> ModelInfo:
-    """Attach documented V4 metadata when the live catalog returns a known model."""
+    """Attach documented metadata when the live catalog returns a known model."""
     known = model_id in _DEEPSEEK_DISPLAY_NAMES
-    vision = model_id == "deepseek-v4-flash-vision-exp"
+    vision = model_id == "deepseek-flash"
     if not known:
         return ModelInfo(id=model_id, name=model_id, provider="deepseek")
 
@@ -173,8 +189,43 @@ class DeepSeekProvider(OpenAIChatProvider):
         return bindings
 
     def model_aliases(self) -> Mapping[str, str]:
-        """Pin DSH's official bare model IDs to this provider."""
-        return {model_id: model_id for model_id in _DEEPSEEK_MODEL_IDS}
+        """Pin current and retired official IDs to canonical DeepSeek models."""
+        return _DEEPSEEK_MODEL_ALIASES
+
+    @staticmethod
+    def _failure_signal(status_code: int, body: bytes) -> ProviderFailureSignal | None:
+        """Classify exact, bounded DeepSeek failures without retaining the body."""
+        if status_code != 400 or len(body) > _MAX_DEEPSEEK_ERROR_BODY_BYTES:
+            return None
+        try:
+            payload = json.loads(body)
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            return None
+        if not isinstance(payload, dict):
+            return None
+        error = payload.get("error")
+        if not isinstance(error, dict):
+            return None
+        if (
+            error.get("type") != "invalid_request_error"
+            or error.get("code") != "invalid_request_error"
+        ):
+            return None
+        message = error.get("message")
+        match = (
+            _DEEPSEEK_CONTEXT_OVERFLOW_MESSAGE.fullmatch(message)
+            if isinstance(message, str)
+            else None
+        )
+        if match is not None:
+            limit = int(match.group("limit"))
+            requested = int(match.group("requested"))
+            messages = int(match.group("messages"))
+            completion = int(match.group("completion"))
+            if requested != messages + completion or requested <= limit:
+                return None
+            return ProviderFailureSignal.CONTEXT_WINDOW_EXCEEDED
+        return None
 
     def is_authenticated(self) -> bool:
         credential = self.auth_manager.get_credential(self.name)
@@ -293,7 +344,7 @@ class DeepSeekProvider(OpenAIChatProvider):
         return "DeepSeek"
 
     async def list_models(self) -> list[ModelInfo]:
-        """Fetch the authoritative model IDs and enrich documented V4 entries."""
+        """Fetch the authoritative model IDs and enrich documented entries."""
         url = f"{self.base_url}/models"
         headers = self._get_headers()
         audit = _request_audit()
@@ -448,6 +499,10 @@ class DeepSeekHttpExecutor(SharedHttpExecutor):
         *,
         stream: bool,
     ) -> NoReturn:
+        try:
+            body = error.response.content
+        except httpx.ResponseNotRead:
+            body = b""
         self.provider._raise_http_status_error(
             "DeepSeek",
             error,
@@ -456,6 +511,7 @@ class DeepSeekHttpExecutor(SharedHttpExecutor):
             include_body=True,
             provider=self.provider.name,
             model=attempt.model.upstream_id,
+            signal=self.provider._failure_signal(error.response.status_code, body),
         )
 
     def _raise_timeout(

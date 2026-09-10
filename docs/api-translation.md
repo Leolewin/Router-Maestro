@@ -51,6 +51,14 @@ Gemini converts to Chat. If a model explicitly lacks a native transport,
 capability fallback is possible; a failed native DeepSeek attempt is never
 retried through another DeepSeek protocol.
 
+DeepSeek context-window rejections are a separate client-recovery signal, not
+a transport fallback. Router-Maestro recognizes only the bounded, structured
+DeepSeek `invalid_request_error` shape and emits the safe OpenAI-compatible
+`context_length_exceeded` code plus
+`X-Router-Maestro-Error-Signal: context_window_exceeded`. Upstream request token
+counts are not returned. DSH can use that classification to compact and retry
+the same native Chat route.
+
 DeepSeek's OpenAI-compatible file lifecycle is also exposed as an identity
 proxy at `POST/GET /api/openai/v1/files` and
 `GET/DELETE /api/openai/v1/files/{file_id}`. It forwards the multipart body or

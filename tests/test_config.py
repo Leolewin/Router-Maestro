@@ -973,8 +973,8 @@ class TestCodexConfig:
         )
         model = {
             "provider": "deepseek",
-            "id": "deepseek/deepseek-v4-flash",
-            "name": "DeepSeek-V4-Flash",
+            "id": "deepseek/deepseek-flash",
+            "name": "DeepSeek-V4.1-Flash",
             "max_prompt_tokens": None,
             "max_output_tokens": 384_000,
             "max_context_window_tokens": 1_000_000,
@@ -985,7 +985,7 @@ class TestCodexConfig:
 
         assert catalog is not None
         entry = next(
-            item for item in catalog["models"] if item["slug"] == "deepseek/deepseek-v4-flash"
+            item for item in catalog["models"] if item["slug"] == "deepseek/deepseek-flash"
         )
         assert entry["context_window"] == 616_000
         assert entry["max_context_window"] == 1_000_000
