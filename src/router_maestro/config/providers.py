@@ -1,12 +1,25 @@
 """Provider and model configuration models."""
 
 import re
+from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    SerializerFunctionWrapHandler,
+    field_validator,
+    model_serializer,
+)
 
 from router_maestro.routing.model_ref import validate_provider_id
 
-RESERVED_PROVIDER_NAMES = frozenset({"github-copilot", "openai", "anthropic", "deepseek"})
+
+def reserved_provider_names() -> frozenset[str]:
+    """Bundled names are declared once, by the provider registrations."""
+    from router_maestro.providers.registry import default_provider_registry
+
+    return default_provider_registry().provider_ids
 
 
 def default_custom_api_key_env(provider: str) -> str:
@@ -38,6 +51,18 @@ class CustomProviderOptions(BaseModel):
         default=False,
         description="Permit requests without an Authorization header",
     )
+    responses: bool = Field(
+        default=False,
+        description="Explicitly enable the provider's native OpenAI Responses transport",
+    )
+
+    @model_serializer(mode="wrap")
+    def serialize_options(self, handler: SerializerFunctionWrapHandler) -> dict[str, Any]:
+        """Keep legacy configuration output unchanged until Responses is enabled."""
+        value = handler(self)
+        if value.get("responses") is False:
+            value.pop("responses")
+        return value
 
 
 class CustomProviderConfig(BaseModel):
@@ -71,7 +96,7 @@ class ProvidersConfig(BaseModel):
         for provider_name in providers:
             validate_provider_id(provider_name)
             canonical_name = provider_name.casefold()
-            if canonical_name in RESERVED_PROVIDER_NAMES:
+            if canonical_name in reserved_provider_names():
                 raise ValueError(
                     f"provider name '{provider_name}' is reserved for a built-in provider"
                 )

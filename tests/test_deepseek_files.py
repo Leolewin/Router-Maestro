@@ -6,15 +6,15 @@ from types import SimpleNamespace
 
 import httpx
 import pytest
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 
 from router_maestro.auth.storage import ApiKeyCredential
 from router_maestro.providers import ProviderError, ProviderFailureKind
 from router_maestro.providers.deepseek import DeepSeekProvider
 from router_maestro.providers.http_executor import ProviderHttpClientPool
+from router_maestro.providers.registry import default_provider_registry
 from router_maestro.server.dependencies import get_app_router
-from router_maestro.server.middleware import verify_api_key
-from router_maestro.server.routes.files import router as files_router
+from router_maestro.server.provider_endpoints import build_provider_endpoints
 
 
 def _provider(upstream_client: httpx.AsyncClient) -> DeepSeekProvider:
@@ -28,7 +28,7 @@ def _provider(upstream_client: httpx.AsyncClient) -> DeepSeekProvider:
 
 def _app(provider: DeepSeekProvider) -> FastAPI:
     app = FastAPI()
-    app.include_router(files_router, dependencies=[Depends(verify_api_key)])
+    app.include_router(build_provider_endpoints(default_provider_registry()))
     app.dependency_overrides[get_app_router] = lambda: SimpleNamespace(
         providers={"deepseek": provider}
     )
@@ -36,8 +36,10 @@ def _app(provider: DeepSeekProvider) -> FastAPI:
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize("prefix", ["/api/openai/v1/files", "/api/providers/deepseek/v1/files"])
 async def test_deepseek_files_routes_proxy_complete_lifecycle_and_rewrite_auth(
     monkeypatch,
+    prefix,
 ) -> None:
     requests: list[dict[str, object]] = []
 
@@ -88,20 +90,20 @@ async def test_deepseek_files_routes_proxy_complete_lifecycle_and_rewrite_auth(
     try:
         async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
             upload = await client.post(
-                "/api/openai/v1/files",
+                prefix,
                 content=multipart,
                 headers={**headers, "Content-Type": "multipart/form-data; boundary=boundary"},
             )
             listing = await client.get(
-                "/api/openai/v1/files?purpose=user_data&limit=1&order=asc",
+                f"{prefix}?purpose=user_data&limit=1&order=asc",
                 headers=headers,
             )
             retrieve = await client.get(
-                "/api/openai/v1/files/file-api-one",
+                f"{prefix}/file-api-one",
                 headers=headers,
             )
             delete = await client.delete(
-                "/api/openai/v1/files/file-api-one",
+                f"{prefix}/file-api-one",
                 headers=headers,
             )
     finally:
@@ -136,7 +138,11 @@ async def test_deepseek_files_routes_proxy_complete_lifecycle_and_rewrite_auth(
 
 
 @pytest.mark.asyncio
-async def test_deepseek_files_route_requires_router_maestro_auth(monkeypatch) -> None:
+@pytest.mark.parametrize("prefix", ["/api/openai/v1/files", "/api/providers/deepseek/v1/files"])
+@pytest.mark.parametrize("headers", [{}, {"Authorization": "Bearer wrong-key"}])
+async def test_deepseek_files_route_requires_router_maestro_auth(
+    monkeypatch, prefix, headers
+) -> None:
     calls = 0
 
     async def handler(request: httpx.Request) -> httpx.Response:
@@ -150,7 +156,7 @@ async def test_deepseek_files_route_requires_router_maestro_auth(monkeypatch) ->
     transport = httpx.ASGITransport(app=_app(provider), raise_app_exceptions=False)
     try:
         async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
-            response = await client.get("/api/openai/v1/files")
+            response = await client.get(prefix, headers=headers)
     finally:
         await provider.close()
 
@@ -159,14 +165,45 @@ async def test_deepseek_files_route_requires_router_maestro_auth(monkeypatch) ->
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize("prefix", ["/api/openai/v1/files", "/api/providers/deepseek/v1/files"])
+@pytest.mark.parametrize(
+    ("method", "suffix", "status_code", "body", "content_type"),
+    [
+        (
+            "POST",
+            "",
+            429,
+            b'{"error":{"message":"storage quota exceeded","type":"files_error"}}',
+            "application/json",
+        ),
+        (
+            "GET",
+            "/file-api-deleted",
+            400,
+            b'{"error":{"message":"file_id does not exist or is not created under your account",'
+            b'"type":"invalid_request_error","param":null,"code":"invalid_request_error"}}',
+            "application/octet-stream",
+        ),
+    ],
+)
 async def test_deepseek_files_route_preserves_upstream_error_body_and_retry_header(
     monkeypatch,
+    prefix,
+    method,
+    suffix,
+    status_code,
+    body,
+    content_type,
 ) -> None:
     async def handler(request: httpx.Request) -> httpx.Response:
         return httpx.Response(
-            429,
-            content=b'{"error":{"message":"storage quota exceeded","type":"files_error"}}',
-            headers={"content-type": "application/json", "retry-after": "12"},
+            status_code,
+            content=body,
+            headers={
+                "content-type": content_type,
+                "retry-after": "12",
+                "set-cookie": "private=upstream",
+            },
             request=request,
         )
 
@@ -176,9 +213,10 @@ async def test_deepseek_files_route_preserves_upstream_error_body_and_retry_head
     transport = httpx.ASGITransport(app=_app(provider), raise_app_exceptions=False)
     try:
         async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
-            response = await client.post(
-                "/api/openai/v1/files",
-                content=b"multipart-body",
+            response = await client.request(
+                method,
+                prefix + suffix,
+                content=b"multipart-body" if method == "POST" else None,
                 headers={
                     "Authorization": "Bearer downstream-router-key",
                     "Content-Type": "multipart/form-data; boundary=test",
@@ -187,11 +225,51 @@ async def test_deepseek_files_route_preserves_upstream_error_body_and_retry_head
     finally:
         await provider.close()
 
-    assert response.status_code == 429
-    assert response.json() == {
-        "error": {"message": "storage quota exceeded", "type": "files_error"}
-    }
+    assert response.status_code == status_code
+    assert response.content == body
+    assert response.headers["content-type"] == content_type
     assert response.headers["retry-after"] == "12"
+    assert "set-cookie" not in response.headers
+
+
+@pytest.mark.asyncio
+async def test_plugin_files_upload_remains_streamed_without_model_routing(monkeypatch):
+    received = []
+    yielded = []
+
+    async def body():
+        for chunk in (b"--boundary\r\n", b"binary-body", b"\r\n--boundary--\r\n"):
+            yielded.append(chunk)
+            yield chunk
+
+    async def handler(request):
+        received.append(await request.aread())
+        return httpx.Response(201, json={"id": "file-api-streamed"})
+
+    async def forbidden_catalog():
+        raise AssertionError("Files must not enter model discovery")
+
+    monkeypatch.setenv("ROUTER_MAESTRO_API_KEY", "downstream-router-key")
+    upstream = httpx.AsyncClient(transport=httpx.MockTransport(handler))
+    provider = _provider(upstream)
+    provider.list_models = forbidden_catalog
+    try:
+        async with httpx.AsyncClient(
+            transport=httpx.ASGITransport(_app(provider)), base_url="http://test"
+        ) as client:
+            response = await client.post(
+                "/api/providers/deepseek/v1/files",
+                content=body(),
+                headers={
+                    "Authorization": "Bearer downstream-router-key",
+                    "Content-Type": "multipart/form-data; boundary=boundary",
+                },
+            )
+        assert response.status_code == 201
+        assert received == [b"".join(yielded)]
+        assert len(yielded) == 3
+    finally:
+        await provider.close()
 
 
 @pytest.mark.asyncio

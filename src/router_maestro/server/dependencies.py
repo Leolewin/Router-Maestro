@@ -44,6 +44,12 @@ async def get_app_router(
     owner: RouterOwner = Depends(get_router_owner),
 ) -> AsyncIterator[Router]:
     """Yield the current app-owned Router generation under a request lease."""
+    from router_maestro.runtime.request_context import get_current_request_context
+
+    context = get_current_request_context()
+    if context is not None:
+        yield context.router
+        return
     lease = await owner.acquire()
     try:
         yield lease.router

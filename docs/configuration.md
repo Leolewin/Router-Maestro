@@ -495,6 +495,18 @@ The default environment name is the provider ID converted to uppercase and
 underscores plus `_API_KEY` (`my-provider` becomes
 `MY_PROVIDER_API_KEY`). Override it with `options.api_key_env`.
 
+Custom OpenAI-compatible providers expose Chat Completions by default. If the
+upstream implements native `/responses`, set `options.responses` to `true` to
+register that transport as well. This preserves native Responses items, unknown
+wire fields, and continuation state instead of converting them to Chat. Do not
+enable it for a service that only implements Chat. The built-in OpenAI provider
+registers both transports without additional configuration.
+
+Application-defined provider types and resource endpoints can be registered
+through the [Provider Plugins](provider-plugins.md) API. Registration is explicit
+at application startup; a `providers.json` entry does not load arbitrary Python
+code or install a package.
+
 When Router-Maestro runs in Docker, the variable must be passed into the
 `router-maestro` container; defining it only in the host shell or Compose
 `.env` file does not automatically expose it to the service. For example:

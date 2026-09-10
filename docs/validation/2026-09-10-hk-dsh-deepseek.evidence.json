@@ -1,0 +1,2032 @@
+{
+  "endpoint": "https://ai-hk.likanwen-niuma.online",
+  "base_commit": "5d191de2b1ca82b49e4b3fdf8bae39a53fa8a512",
+  "branch": "users/kanwli/provider-plugin-boundaries",
+  "dirty": true,
+  "source_sha256": "f72fef0ef54398fab91ab231178df23d1c7ea37a60f00eb54f8048a2e4a5679d",
+  "source_hash_recipe": "SHA256 of sorted package-relative Python path + NUL + file bytes",
+  "deployment": {
+    "image_id": "sha256:e90a39bf808fea9461d38cdd8c4dcd39879a93f61917e0e3f276a34e61695bc7",
+    "image_ref": "router-maestro:hk-plugins-f72fef0e-20260910",
+    "candidate_matches": true,
+    "restart_count": 0,
+    "status": "running",
+    "health": "healthy",
+    "unrelated_unchanged": {
+      "traefik": true,
+      "router-maestro-deepseek-test": true,
+      "star-office-ui": true
+    },
+    "env_unchanged": true,
+    "base_compose_unchanged": true,
+    "mounts_unchanged": true
+  },
+  "parity": {
+    "mode": "deployed",
+    "image": "router-maestro:hk-plugins-f72fef0e-20260910",
+    "python_files": 146,
+    "source_parity": true,
+    "version": "0.9.6",
+    "files_paths": [
+      "/api/openai/v1/files",
+      "/api/openai/v1/files/{file_id}",
+      "/api/providers/deepseek/v1/files",
+      "/api/providers/deepseek/v1/files/{file_id}"
+    ]
+  },
+  "dsh_version": "0.1.2-rc.1",
+  "tui_version": "0.10.0-beta.5",
+  "node_version": "22.22.0",
+  "sessions": [
+    {
+      "profile": "ds_native",
+      "classification": "final",
+      "session_id": "218c8025-fc68-4143-af86-5b24255fb9a7",
+      "round_exact_match": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true
+      },
+      "context": [
+        {
+          "provider": "deepseek-official",
+          "model": "deepseek/deepseek-v4-pro",
+          "contextWindow": 1000000
+        }
+      ],
+      "tool_calls": [
+        "bash",
+        "mcp__qmd__status"
+      ],
+      "tool_results_successful": true,
+      "completed_turns": 5
+    },
+    {
+      "profile": "ds_responses",
+      "classification": "diagnostic_initial",
+      "session_id": "138ad868-583b-4496-9087-47e095342a06",
+      "round_exact_match": {
+        "1": false,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true
+      },
+      "context": [
+        {
+          "provider": "router-maestro",
+          "model": "deepseek/deepseek-v4-pro",
+          "contextWindow": 1000000
+        }
+      ],
+      "tool_calls": [
+        "bash",
+        "mcp__qmd__status"
+      ],
+      "tool_results_successful": true,
+      "completed_turns": 5
+    },
+    {
+      "profile": "ds_responses",
+      "classification": "final",
+      "session_id": "1c9ea130-833b-4ba2-bd0d-28caa3c7ef02",
+      "round_exact_match": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true
+      },
+      "context": [
+        {
+          "provider": "router-maestro",
+          "model": "deepseek/deepseek-v4-pro",
+          "contextWindow": 1000000
+        }
+      ],
+      "tool_calls": [
+        "bash",
+        "mcp__qmd__status"
+      ],
+      "tool_results_successful": true,
+      "completed_turns": 5
+    },
+    {
+      "profile": "gpt",
+      "classification": "final",
+      "session_id": "b197bb96-f19e-4012-9994-4e16aa5022e2",
+      "round_exact_match": {
+        "1": true,
+        "2": true,
+        "3": true,
+        "4": true,
+        "5": true
+      },
+      "context": [
+        {
+          "provider": "router-maestro",
+          "model": "github-copilot/gpt-5.6-luna",
+          "contextWindow": 1050000
+        }
+      ],
+      "tool_calls": [
+        "bash",
+        "mcp__qmd__status"
+      ],
+      "tool_results_successful": true,
+      "completed_turns": 5
+    }
+  ],
+  "dsh_request_count": 28,
+  "dsh_audit_groups": [
+    {
+      "provider": "deepseek",
+      "transport": "openai_chat",
+      "conversion": "identity",
+      "requests": 7
+    },
+    {
+      "provider": "deepseek",
+      "transport": "openai_responses",
+      "conversion": "identity",
+      "requests": 14
+    },
+    {
+      "provider": "github-copilot",
+      "transport": "openai_responses",
+      "conversion": "identity",
+      "requests": 7
+    }
+  ],
+  "http_smokes": [
+    {
+      "model": "deepseek/deepseek-v4-pro",
+      "protocol": "responses",
+      "status": 200,
+      "request_id": "9d89ddd500e04063b436eb6a4cee254a",
+      "elapsed_seconds": 3.71,
+      "response_status": "completed",
+      "exact_match": true,
+      "usage": {
+        "input_tokens": 23,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens": 28,
+        "output_tokens_details": {
+          "reasoning_tokens": 18
+        },
+        "total_tokens": 51
+      }
+    },
+    {
+      "model": "deepseek/deepseek-v4-pro",
+      "protocol": "chat",
+      "status": 200,
+      "request_id": "90e3f95c37234b7b853c38b50408495a",
+      "elapsed_seconds": 2.02,
+      "finish_reason": "stop",
+      "exact_match": true,
+      "usage": {
+        "prompt_tokens": 24,
+        "completion_tokens": 30,
+        "total_tokens": 54,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 19
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 24
+      }
+    },
+    {
+      "model": "deepseek/deepseek-v4-pro",
+      "protocol": "anthropic",
+      "status": 200,
+      "request_id": "731f75b74c96494b9fe5067c6c9c1dcb",
+      "elapsed_seconds": 1.46,
+      "stop_reason": "end_turn",
+      "exact_match": true,
+      "usage": {
+        "input_tokens": 101,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "output_tokens": 39,
+        "service_tier": "standard"
+      }
+    },
+    {
+      "model": "github-copilot/gpt-5.6-luna",
+      "protocol": "responses",
+      "status": 200,
+      "request_id": "1e0f4ab0dd494c53b62744445a3d31aa",
+      "elapsed_seconds": 3.28,
+      "response_status": "completed",
+      "exact_match": true,
+      "usage": {
+        "input_tokens": 24,
+        "input_tokens_details": {
+          "cached_tokens": 0
+        },
+        "output_tokens": 12,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 36
+      }
+    }
+  ],
+  "deepseek_extra_protocols": [
+    {
+      "case": "flash_catalog_alias_chat",
+      "model": "deepseek/deepseek-flash",
+      "status": 200,
+      "request_id": "31552fb43c354b40b4fa38c7f21a72f0",
+      "exact_match": true
+    },
+    {
+      "case": "gemini_nonstream",
+      "model": "deepseek/deepseek-v4-pro",
+      "status": 200,
+      "request_id": "7f25c08f3e9c44cc8c544ce6ab8b1b13",
+      "exact_match": true,
+      "finish_reasons": [
+        "STOP"
+      ],
+      "errors": [],
+      "elapsed_seconds": 1.95
+    },
+    {
+      "case": "gemini_stream",
+      "model": "deepseek/deepseek-v4-pro",
+      "status": 200,
+      "request_id": "3b9adc83e26b4b26971ed8ed862d9ac8",
+      "exact_match": true,
+      "finish_reasons": [
+        "STOP"
+      ],
+      "errors": [],
+      "elapsed_seconds": 2.25
+    },
+    {
+      "case": "anthropic_count_tokens",
+      "model": "deepseek/deepseek-v4-pro",
+      "status": 200,
+      "request_id": "fa6740fd5c9240b5a4551569a7614687",
+      "result": {
+        "input_tokens": 84
+      }
+    }
+  ],
+  "files": {
+    "cases": [
+      {
+        "upload_path": "/api/openai/v1/files",
+        "upload_status": 200,
+        "request_id": "e831aba6d85a4c9d820a9ace32d1e95b",
+        "file_id": "file-api-0aaef8d9-ca85-4abb-adfc-51621bb2680d",
+        "checks": [
+          {
+            "path": "/api/openai/v1/files",
+            "retrieve": 200,
+            "list": 200,
+            "metadata_match": true,
+            "content_type": "application/json"
+          },
+          {
+            "path": "/api/providers/deepseek/v1/files",
+            "retrieve": 200,
+            "list": 200,
+            "metadata_match": true,
+            "content_type": "application/json"
+          }
+        ],
+        "delete": {
+          "path": "/api/providers/deepseek/v1/files/file-api-0aaef8d9-ca85-4abb-adfc-51621bb2680d",
+          "status": 200
+        },
+        "absent": [
+          {
+            "path": "/api/openai/v1/files",
+            "status": 400,
+            "list_absent": true,
+            "error_type": "invalid_request_error",
+            "content_type": "application/octet-stream"
+          },
+          {
+            "path": "/api/providers/deepseek/v1/files",
+            "status": 400,
+            "list_absent": true,
+            "error_type": "invalid_request_error",
+            "content_type": "application/octet-stream"
+          }
+        ]
+      },
+      {
+        "upload_path": "/api/providers/deepseek/v1/files",
+        "upload_status": 200,
+        "request_id": "bcdc72d277594d96baf2df7624c46e0b",
+        "file_id": "file-api-4adb7403-7a4b-4fbe-be5a-ceb7c3891b11",
+        "checks": [
+          {
+            "path": "/api/openai/v1/files",
+            "retrieve": 200,
+            "list": 200,
+            "metadata_match": true,
+            "content_type": "application/json"
+          },
+          {
+            "path": "/api/providers/deepseek/v1/files",
+            "retrieve": 200,
+            "list": 200,
+            "metadata_match": true,
+            "content_type": "application/json"
+          }
+        ],
+        "delete": {
+          "path": "/api/openai/v1/files/file-api-4adb7403-7a4b-4fbe-be5a-ceb7c3891b11",
+          "status": 200
+        },
+        "absent": [
+          {
+            "path": "/api/openai/v1/files",
+            "status": 400,
+            "list_absent": true,
+            "error_type": "invalid_request_error",
+            "content_type": "application/octet-stream"
+          },
+          {
+            "path": "/api/providers/deepseek/v1/files",
+            "status": 400,
+            "list_absent": true,
+            "error_type": "invalid_request_error",
+            "content_type": "application/octet-stream"
+          }
+        ]
+      }
+    ],
+    "cleanup": [
+      {
+        "id": "file-api-0aaef8d9-ca85-4abb-adfc-51621bb2680d",
+        "deleted": true
+      },
+      {
+        "id": "file-api-4adb7403-7a4b-4fbe-be5a-ceb7c3891b11",
+        "deleted": true
+      }
+    ],
+    "fixture_bytes": 70,
+    "fixture_valid_png": true
+  },
+  "files_initial_probe": {
+    "classification": "test_harness_expectation_failure",
+    "expected_deleted_lookup_status": 404,
+    "observed_deleted_lookup_status": 400,
+    "error_message": "file_id does not exist or is not created under your account",
+    "cases": [
+      {
+        "file_id": "file-api-be6f966c-7d47-45d4-a0db-ab71470a6dec",
+        "upload_path": "/api/openai/v1/files",
+        "upload_metadata_and_cross_alias_listing_assertions_passed": true,
+        "delete_success_assertion_passed": true,
+        "followup_lookup_status_both_aliases": 400,
+        "followup_list_absent_both_aliases": true
+      }
+    ],
+    "evidence_origin": "Initial lifecycle execution and the explicit subsequent two-alias absence check; the aborted helper did not save its initial report."
+  },
+  "files_prior_fixture": {
+    "cases": [
+      {
+        "upload_path": "/api/openai/v1/files",
+        "upload_status": 200,
+        "request_id": "a293d4c28a7248ac895ba5afa142d411",
+        "file_id": "file-api-0bb6e45b-a71d-493c-a75b-e83a842fdf9b",
+        "checks": [
+          {
+            "path": "/api/openai/v1/files",
+            "retrieve": 200,
+            "list": 200,
+            "metadata_match": true,
+            "content_type": "application/json"
+          },
+          {
+            "path": "/api/providers/deepseek/v1/files",
+            "retrieve": 200,
+            "list": 200,
+            "metadata_match": true,
+            "content_type": "application/json"
+          }
+        ],
+        "delete": {
+          "path": "/api/providers/deepseek/v1/files/file-api-0bb6e45b-a71d-493c-a75b-e83a842fdf9b",
+          "status": 200
+        },
+        "absent": [
+          {
+            "path": "/api/openai/v1/files",
+            "status": 400,
+            "list_absent": true,
+            "error_type": "invalid_request_error",
+            "content_type": "application/octet-stream"
+          },
+          {
+            "path": "/api/providers/deepseek/v1/files",
+            "status": 400,
+            "list_absent": true,
+            "error_type": "invalid_request_error",
+            "content_type": "application/octet-stream"
+          }
+        ]
+      },
+      {
+        "upload_path": "/api/providers/deepseek/v1/files",
+        "upload_status": 200,
+        "request_id": "718669c124db498e8e0a08515999a970",
+        "file_id": "file-api-a6c1ebd0-be8c-4ffe-9d72-3048e9771a2a",
+        "checks": [
+          {
+            "path": "/api/openai/v1/files",
+            "retrieve": 200,
+            "list": 200,
+            "metadata_match": true,
+            "content_type": "application/json"
+          },
+          {
+            "path": "/api/providers/deepseek/v1/files",
+            "retrieve": 200,
+            "list": 200,
+            "metadata_match": true,
+            "content_type": "application/json"
+          }
+        ],
+        "delete": {
+          "path": "/api/openai/v1/files/file-api-a6c1ebd0-be8c-4ffe-9d72-3048e9771a2a",
+          "status": 200
+        },
+        "absent": [
+          {
+            "path": "/api/openai/v1/files",
+            "status": 400,
+            "list_absent": true,
+            "error_type": "invalid_request_error",
+            "content_type": "application/octet-stream"
+          },
+          {
+            "path": "/api/providers/deepseek/v1/files",
+            "status": 400,
+            "list_absent": true,
+            "error_type": "invalid_request_error",
+            "content_type": "application/octet-stream"
+          }
+        ]
+      }
+    ],
+    "cleanup": [
+      {
+        "id": "file-api-0bb6e45b-a71d-493c-a75b-e83a842fdf9b",
+        "deleted": true
+      },
+      {
+        "id": "file-api-a6c1ebd0-be8c-4ffe-9d72-3048e9771a2a",
+        "deleted": true
+      }
+    ],
+    "fixture_bytes": 68,
+    "classification": "diagnostic_only_invalid_png_crc",
+    "final_fixture": false
+  },
+  "files_final_absence": [
+    {
+      "path": "/api/openai/v1/files",
+      "file_id": "file-api-0aaef8d9-ca85-4abb-adfc-51621bb2680d",
+      "status": 400,
+      "absent_from_list": true
+    },
+    {
+      "path": "/api/openai/v1/files",
+      "file_id": "file-api-4adb7403-7a4b-4fbe-be5a-ceb7c3891b11",
+      "status": 400,
+      "absent_from_list": true
+    },
+    {
+      "path": "/api/openai/v1/files",
+      "file_id": "file-api-be6f966c-7d47-45d4-a0db-ab71470a6dec",
+      "status": 400,
+      "absent_from_list": true
+    },
+    {
+      "path": "/api/openai/v1/files",
+      "file_id": "file-api-0bb6e45b-a71d-493c-a75b-e83a842fdf9b",
+      "status": 400,
+      "absent_from_list": true
+    },
+    {
+      "path": "/api/openai/v1/files",
+      "file_id": "file-api-a6c1ebd0-be8c-4ffe-9d72-3048e9771a2a",
+      "status": 400,
+      "absent_from_list": true
+    },
+    {
+      "path": "/api/providers/deepseek/v1/files",
+      "file_id": "file-api-0aaef8d9-ca85-4abb-adfc-51621bb2680d",
+      "status": 400,
+      "absent_from_list": true
+    },
+    {
+      "path": "/api/providers/deepseek/v1/files",
+      "file_id": "file-api-4adb7403-7a4b-4fbe-be5a-ceb7c3891b11",
+      "status": 400,
+      "absent_from_list": true
+    },
+    {
+      "path": "/api/providers/deepseek/v1/files",
+      "file_id": "file-api-be6f966c-7d47-45d4-a0db-ab71470a6dec",
+      "status": 400,
+      "absent_from_list": true
+    },
+    {
+      "path": "/api/providers/deepseek/v1/files",
+      "file_id": "file-api-0bb6e45b-a71d-493c-a75b-e83a842fdf9b",
+      "status": 400,
+      "absent_from_list": true
+    },
+    {
+      "path": "/api/providers/deepseek/v1/files",
+      "file_id": "file-api-a6c1ebd0-be8c-4ffe-9d72-3048e9771a2a",
+      "status": 400,
+      "absent_from_list": true
+    }
+  ],
+  "audit": [
+    {
+      "request_id": "0195fcadbd844145a03bd29f6deb4669",
+      "timestamp": 1789009525.1792622,
+      "method": "POST",
+      "path": "/api/openai/v1/chat/completions",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789009525.5434368,
+          "request_id": "0195fcadbd844145a03bd29f6deb4669",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-chat",
+          "entry_protocol": "openai_chat",
+          "upstream_transport": "openai_chat",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/chat/completions"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 2994.7,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "06ef810ddc714d79bdb554f5da2e52f1",
+      "timestamp": 1789009486.1160603,
+      "method": "POST",
+      "path": "/api/openai/v1/chat/completions",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789009486.4008956,
+          "request_id": "06ef810ddc714d79bdb554f5da2e52f1",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-chat",
+          "entry_protocol": "openai_chat",
+          "upstream_transport": "openai_chat",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/chat/completions"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 1407.6,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "082c055dab3b4a8c9497e83f7fc18d27",
+      "timestamp": 1789010065.5309298,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789010066.144614,
+          "request_id": "082c055dab3b4a8c9497e83f7fc18d27",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 2084.4,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "140c4e3ab1244f9b94275e3d3ea6cb7e",
+      "timestamp": 1789010068.4495587,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789010068.896069,
+          "request_id": "140c4e3ab1244f9b94275e3d3ea6cb7e",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 1326.2,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "15e16822ac254680a6d3be343f059acf",
+      "timestamp": 1789009976.6948798,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "github-copilot/gpt-5.6-luna",
+      "attempts": [
+        {
+          "timestamp": 1789009979.7897377,
+          "request_id": "15e16822ac254680a6d3be343f059acf",
+          "provider": "github-copilot",
+          "model": "gpt-5.6-luna",
+          "binding": "copilot-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.enterprise.githubcopilot.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 3506.7,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "16e0ad7b202f4d728471597a45f2c001",
+      "timestamp": 1789009232.7551992,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789009234.4556932,
+          "request_id": "16e0ad7b202f4d728471597a45f2c001",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200,
+        200,
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "GET",
+          "host": "api.enterprise.githubcopilot.com",
+          "path": "/models"
+        },
+        {
+          "method": "GET",
+          "host": "api.deepseek.com",
+          "path": "/models"
+        },
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 4820.5,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "1e0f4ab0dd494c53b62744445a3d31aa",
+      "timestamp": 1789008928.7878163,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "github-copilot/gpt-5.6-luna",
+      "attempts": [
+        {
+          "timestamp": 1789008931.6764433,
+          "request_id": "1e0f4ab0dd494c53b62744445a3d31aa",
+          "provider": "github-copilot",
+          "model": "gpt-5.6-luna",
+          "binding": "copilot-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.enterprise.githubcopilot.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 2891.6,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "31552fb43c354b40b4fa38c7f21a72f0",
+      "timestamp": 1789009704.3913186,
+      "method": "POST",
+      "path": "/api/openai/v1/chat/completions",
+      "model": "deepseek/deepseek-flash",
+      "attempts": [
+        {
+          "timestamp": 1789009705.101331,
+          "request_id": "31552fb43c354b40b4fa38c7f21a72f0",
+          "provider": "deepseek",
+          "model": "deepseek-flash",
+          "binding": "deepseek-openai-chat",
+          "entry_protocol": "openai_chat",
+          "upstream_transport": "openai_chat",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/chat/completions"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 713.7,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "39ce4c80ef154bc091f1fd1ad10a3c68",
+      "timestamp": 1789010045.903528,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789010046.4148445,
+          "request_id": "39ce4c80ef154bc091f1fd1ad10a3c68",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 1557.7,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "3b9adc83e26b4b26971ed8ed862d9ac8",
+      "timestamp": 1789009707.4608653,
+      "method": "POST",
+      "path": "/api/gemini/v1beta/models/deepseek/deepseek-v4-pro:streamGenerateContent",
+      "model": null,
+      "attempts": [
+        {
+          "timestamp": 1789009707.6271389,
+          "request_id": "3b9adc83e26b4b26971ed8ed862d9ac8",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-chat",
+          "entry_protocol": "gemini",
+          "upstream_transport": "openai_chat",
+          "conversion_mode": "semantic_ir",
+          "outcome": "selected",
+          "ir_materialized": true
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/chat/completions"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 1865.4,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "40b4310946834828a64f22710b34f9bc",
+      "timestamp": 1789009146.594334,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789009147.05033,
+          "request_id": "40b4310946834828a64f22710b34f9bc",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 2079.8,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "4774273e458b4974b37756b37909512b",
+      "timestamp": 1789009175.528187,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789009175.905468,
+          "request_id": "4774273e458b4974b37756b37909512b",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 1165.7,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "49d134a0c4034ccba02ac1ea29810fc7",
+      "timestamp": 1789009914.448481,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "github-copilot/gpt-5.6-luna",
+      "attempts": [
+        {
+          "timestamp": 1789009916.4522145,
+          "request_id": "49d134a0c4034ccba02ac1ea29810fc7",
+          "provider": "github-copilot",
+          "model": "gpt-5.6-luna",
+          "binding": "copilot-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.enterprise.githubcopilot.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 2286.7,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "6238921c59ff448ab18ccab9cdc341f1",
+      "timestamp": 1789009898.0574856,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "github-copilot/gpt-5.6-luna",
+      "attempts": [
+        {
+          "timestamp": 1789009901.4891605,
+          "request_id": "6238921c59ff448ab18ccab9cdc341f1",
+          "provider": "github-copilot",
+          "model": "gpt-5.6-luna",
+          "binding": "copilot-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200,
+        200,
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "GET",
+          "host": "api.enterprise.githubcopilot.com",
+          "path": "/models"
+        },
+        {
+          "method": "GET",
+          "host": "api.deepseek.com",
+          "path": "/models"
+        },
+        {
+          "method": "POST",
+          "host": "api.enterprise.githubcopilot.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 3838.1,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "6d9ad6547f0046a59aa39e8d28d5498f",
+      "timestamp": 1789009559.959299,
+      "method": "POST",
+      "path": "/api/openai/v1/chat/completions",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789009561.4050999,
+          "request_id": "6d9ad6547f0046a59aa39e8d28d5498f",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-chat",
+          "entry_protocol": "openai_chat",
+          "upstream_transport": "openai_chat",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200,
+        200,
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "GET",
+          "host": "api.enterprise.githubcopilot.com",
+          "path": "/models"
+        },
+        {
+          "method": "GET",
+          "host": "api.deepseek.com",
+          "path": "/models"
+        },
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/chat/completions"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 2792.0,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "722cc587c4414c499f56b443c4068f47",
+      "timestamp": 1789009737.2622726,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "github-copilot/gpt-5.6-luna",
+      "attempts": [
+        {
+          "timestamp": 1789009739.2331033,
+          "request_id": "722cc587c4414c499f56b443c4068f47",
+          "provider": "github-copilot",
+          "model": "gpt-5.6-luna",
+          "binding": "copilot-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.enterprise.githubcopilot.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 2289.6,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "72ab0e1ea90c4c6397c4dc469f4213e3",
+      "timestamp": 1789009268.1893005,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789009268.645515,
+          "request_id": "72ab0e1ea90c4c6397c4dc469f4213e3",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 2339.9,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "731f75b74c96494b9fe5067c6c9c1dcb",
+      "timestamp": 1789008927.324464,
+      "method": "POST",
+      "path": "/api/anthropic/v1/messages",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789008928.3965387,
+          "request_id": "731f75b74c96494b9fe5067c6c9c1dcb",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-anthropic-messages",
+          "entry_protocol": "anthropic_messages",
+          "upstream_transport": "anthropic_messages",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/anthropic/v1/messages"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 1074.9,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "7733471f8c3240faa8f58b92cda16f66",
+      "timestamp": 1789009238.0829277,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789009238.562893,
+          "request_id": "7733471f8c3240faa8f58b92cda16f66",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 1402.9,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "778ce814b86c40609bd311bd93ed97bc",
+      "timestamp": 1789009770.3897934,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "github-copilot/gpt-5.6-luna",
+      "attempts": [
+        {
+          "timestamp": 1789009773.6373172,
+          "request_id": "778ce814b86c40609bd311bd93ed97bc",
+          "provider": "github-copilot",
+          "model": "gpt-5.6-luna",
+          "binding": "copilot-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.enterprise.githubcopilot.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 4617.6,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "7e16b1ebba3a4fc1af3c156caf4c9cfc",
+      "timestamp": 1789009433.161706,
+      "method": "POST",
+      "path": "/api/openai/v1/chat/completions",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789009433.591413,
+          "request_id": "7e16b1ebba3a4fc1af3c156caf4c9cfc",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-chat",
+          "entry_protocol": "openai_chat",
+          "upstream_transport": "openai_chat",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/chat/completions"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 1963.0,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "7ecf99db802341959c8464a8c2dfdf31",
+      "timestamp": 1789009917.6838691,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "github-copilot/gpt-5.6-luna",
+      "attempts": [
+        {
+          "timestamp": 1789009919.1094193,
+          "request_id": "7ecf99db802341959c8464a8c2dfdf31",
+          "provider": "github-copilot",
+          "model": "gpt-5.6-luna",
+          "binding": "copilot-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.enterprise.githubcopilot.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 1643.9,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "7f25c08f3e9c44cc8c544ce6ab8b1b13",
+      "timestamp": 1789009705.5057428,
+      "method": "POST",
+      "path": "/api/gemini/v1beta/models/deepseek/deepseek-v4-pro:generateContent",
+      "model": null,
+      "attempts": [
+        {
+          "timestamp": 1789009707.0669327,
+          "request_id": "7f25c08f3e9c44cc8c544ce6ab8b1b13",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-chat",
+          "entry_protocol": "gemini",
+          "upstream_transport": "openai_chat",
+          "conversion_mode": "semantic_ir",
+          "outcome": "selected",
+          "ir_materialized": true
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/chat/completions"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 1564.3,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "823fe1d665cc4832a2fe54253569dc46",
+      "timestamp": 1789009985.6610866,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789009986.175723,
+          "request_id": "823fe1d665cc4832a2fe54253569dc46",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 2457.3,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "87aec724e0d44f21815f012949d0336e",
+      "timestamp": 1789010108.1280658,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789010108.5652661,
+          "request_id": "87aec724e0d44f21815f012949d0336e",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 1347.2,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "90e3f95c37234b7b853c38b50408495a",
+      "timestamp": 1789008925.306806,
+      "method": "POST",
+      "path": "/api/openai/v1/chat/completions",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789008926.9305296,
+          "request_id": "90e3f95c37234b7b853c38b50408495a",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-chat",
+          "entry_protocol": "openai_chat",
+          "upstream_transport": "openai_chat",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/chat/completions"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 1626.9,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "9d89ddd500e04063b436eb6a4cee254a",
+      "timestamp": 1789008922.2814858,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789008924.9107637,
+          "request_id": "9d89ddd500e04063b436eb6a4cee254a",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200,
+        200,
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "GET",
+          "host": "api.enterprise.githubcopilot.com",
+          "path": "/models"
+        },
+        {
+          "method": "GET",
+          "host": "api.deepseek.com",
+          "path": "/models"
+        },
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 2631.7,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "9e9692d923614f53905f993603071543",
+      "timestamp": 1789009594.6658878,
+      "method": "POST",
+      "path": "/api/openai/v1/chat/completions",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789009595.072029,
+          "request_id": "9e9692d923614f53905f993603071543",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-chat",
+          "entry_protocol": "openai_chat",
+          "upstream_transport": "openai_chat",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/chat/completions"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 1336.3,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "aa473d1f08a1482baceb57e574de5b63",
+      "timestamp": 1789010041.5857313,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789010041.993999,
+          "request_id": "aa473d1f08a1482baceb57e574de5b63",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 3813.9,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "ba236bfb68fa4456837a52c49be77da6",
+      "timestamp": 1789009716.8492548,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "github-copilot/gpt-5.6-luna",
+      "attempts": [
+        {
+          "timestamp": 1789009720.0630646,
+          "request_id": "ba236bfb68fa4456837a52c49be77da6",
+          "provider": "github-copilot",
+          "model": "gpt-5.6-luna",
+          "binding": "copilot-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.enterprise.githubcopilot.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 3614.6,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "bdb06fbbc6314c88a676f9259c97064d",
+      "timestamp": 1789009564.334825,
+      "method": "POST",
+      "path": "/api/openai/v1/chat/completions",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789009564.598166,
+          "request_id": "bdb06fbbc6314c88a676f9259c97064d",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-chat",
+          "entry_protocol": "openai_chat",
+          "upstream_transport": "openai_chat",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/chat/completions"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 1154.7,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "ca328034f87b41ac85ced0afa604f236",
+      "timestamp": 1789010005.8059287,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789010006.2093492,
+          "request_id": "ca328034f87b41ac85ced0afa604f236",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 1574.7,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "d731a45d61ca4f7f902d91c356874085",
+      "timestamp": 1789009265.664306,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789009266.142068,
+          "request_id": "d731a45d61ca4f7f902d91c356874085",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 1714.0,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "fa6740fd5c9240b5a4551569a7614687",
+      "timestamp": 1789009709.7194862,
+      "method": "POST",
+      "path": "/api/anthropic/v1/messages/count_tokens",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/anthropic/v1/messages/count_tokens"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 187.0,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "fce4770a6f3b440cba89108d570644be",
+      "timestamp": 1789009529.469883,
+      "method": "POST",
+      "path": "/api/openai/v1/chat/completions",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789009529.8440976,
+          "request_id": "fce4770a6f3b440cba89108d570644be",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-chat",
+          "entry_protocol": "openai_chat",
+          "upstream_transport": "openai_chat",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/chat/completions"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 1107.4,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    },
+    {
+      "request_id": "ffe3ac7b40a04f359ef75450db2e4aa8",
+      "timestamp": 1789009323.9916675,
+      "method": "POST",
+      "path": "/api/openai/v1/responses",
+      "model": "deepseek/deepseek-v4-pro",
+      "attempts": [
+        {
+          "timestamp": 1789009324.3636353,
+          "request_id": "ffe3ac7b40a04f359ef75450db2e4aa8",
+          "provider": "deepseek",
+          "model": "deepseek-v4-pro",
+          "binding": "deepseek-openai-responses",
+          "entry_protocol": "openai_responses",
+          "upstream_transport": "openai_responses",
+          "conversion_mode": "identity",
+          "outcome": "selected",
+          "ir_materialized": false
+        }
+      ],
+      "upstream_statuses": [
+        200
+      ],
+      "upstream_requests": [
+        {
+          "method": "POST",
+          "host": "api.deepseek.com",
+          "path": "/responses"
+        }
+      ],
+      "outbound": {
+        "status": 200,
+        "duration_ms": 1724.0,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "finish_reason": null,
+        "incomplete_details": null
+      }
+    }
+  ],
+  "checks": {
+    "locked_dependency_tests_passed": 4077,
+    "hk_dependency_tests_passed": 4077,
+    "controlled_integration_passed": 25,
+    "ruff": true,
+    "format": true,
+    "basedpyright_version": "1.39.10",
+    "basedpyright_errors": 0
+  },
+  "cleanup": {
+    "client_exit_codes": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "remaining_probe_files": [],
+    "provider_files_deleted": 5,
+    "persistent_client_files_checked": 13,
+    "persistent_client_files_changed": [],
+    "audit_restored": true,
+    "final_config_revision": "14da60681979795e148068008d082c73a36e84292f4bc70d71d65dc68112d4ea",
+    "original_config_revision_restored": true,
+    "remote_audit_retained": true,
+    "local_scratch_cleanup": "moved_to_macos_trash_and_original_path_absent"
+  }
+}

@@ -20,6 +20,7 @@ class OpenAICompatibleProvider(OpenAIChatProvider):
         models: dict[str, str] | None = None,
         *,
         allow_unauthenticated: bool = False,
+        responses: bool = False,
     ) -> None:
         """Initialize the provider.
 
@@ -29,8 +30,10 @@ class OpenAICompatibleProvider(OpenAIChatProvider):
             api_key: API key for authentication
             models: Dict of model_id -> display_name
             allow_unauthenticated: Whether the configured endpoint explicitly permits no key
+            responses: Whether the upstream explicitly supports native Responses
         """
         self.name = name
+        self.supports_responses = responses
         super().__init__(base_url=base_url, logger=logger)
         self.api_key = api_key
         self.allow_unauthenticated = allow_unauthenticated

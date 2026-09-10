@@ -7,7 +7,7 @@ from types import SimpleNamespace
 from typing import cast
 
 import pytest
-from fastapi import BackgroundTasks
+from fastapi import BackgroundTasks, FastAPI, Request
 from starlette.responses import Response
 
 from router_maestro.auth.discovery import ProviderAuthSource
@@ -537,7 +537,7 @@ def test_auth_provider_discovery_uses_server_provider_configuration(monkeypatch)
         ),
     )
 
-    response = admin.list_auth_providers()
+    response = admin.list_auth_providers(Request({"type": "http", "app": FastAPI()}))
 
     assert [provider.provider for provider in response.providers] == [
         "github-copilot",

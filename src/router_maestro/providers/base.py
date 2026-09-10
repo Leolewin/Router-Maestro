@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from router_maestro.providers.bindings import EndpointBinding
     from router_maestro.routing.attempts import AttemptRecord
     from router_maestro.routing.model_ref import ModelRef
+    from router_maestro.routing.transport_policy import TransportPolicy
 
 TIMEOUT_NON_STREAMING = httpx.Timeout(connect=30.0, read=240.0, write=30.0, pool=30.0)
 TIMEOUT_STREAMING = httpx.Timeout(connect=30.0, read=600.0, write=30.0, pool=30.0)
@@ -760,9 +761,21 @@ class BaseProvider(ABC):
     @property
     def capabilities(self) -> ProviderCapabilities:
         """Transport operations implemented by the base provider contract."""
-        return ProviderCapabilities(operations=frozenset({Operation.CHAT, Operation.CHAT_STREAM}))
+        if type(self).bindings is not BaseProvider.bindings:
+            return ProviderCapabilities(
+                operations=frozenset(
+                    operation
+                    for binding in self.bindings()
+                    for operation in binding.capabilities.operations
+                )
+            )
+        operations = set()
+        if type(self).chat_completion is not BaseProvider.chat_completion:
+            operations.add(Operation.CHAT)
+        if type(self).chat_completion_stream is not BaseProvider.chat_completion_stream:
+            operations.add(Operation.CHAT_STREAM)
+        return ProviderCapabilities(operations=frozenset(operations))
 
-    @abstractmethod
     async def chat_completion(self, request: ChatRequest) -> ChatResponse:
         """Generate a chat completion.
 
@@ -772,9 +785,13 @@ class BaseProvider(ABC):
         Returns:
             Chat completion response
         """
-        pass
+        raise ProviderError(
+            "Provider does not implement legacy Chat completion",
+            status_code=501,
+            kind=ProviderFailureKind.UNSUPPORTED_OPERATION,
+            provider=self.name,
+        )
 
-    @abstractmethod
     async def chat_completion_stream(self, request: ChatRequest) -> AsyncIterator[ChatStreamChunk]:
         """Generate a streaming chat completion.
 
@@ -786,7 +803,12 @@ class BaseProvider(ABC):
         """
         if False:  # pragma: no cover - marks the abstract contract as an async generator
             yield ChatStreamChunk(content="")
-        raise NotImplementedError
+        raise ProviderError(
+            "Provider does not implement legacy Chat streaming",
+            status_code=501,
+            kind=ProviderFailureKind.UNSUPPORTED_OPERATION,
+            provider=self.name,
+        )
 
     @abstractmethod
     async def list_models(self) -> list[ModelInfo]:
@@ -859,14 +881,16 @@ class BaseProvider(ABC):
         self,
         ingress_protocol: WireProtocol | None = None,
     ) -> tuple[str, ...]:
-        """Return binding IDs in provider-preferred order.
-
-        Identity-first selection is applied by the dispatcher before this
-        provider-specific tie breaker. The compatibility default follows the
-        stable order returned by :meth:`bindings`.
-        """
-        del ingress_protocol
-        return tuple(binding.id for binding in self.bindings())
+        """Order declared bindings using the shared protocol policy."""
+        bindings = self.bindings()
+        if ingress_protocol is None:
+            return tuple(binding.id for binding in bindings)
+        return tuple(
+            binding.id
+            for protocol in self.transport_policy.protocols(ingress_protocol)
+            for binding in bindings
+            if binding.protocol is protocol
+        )
 
     def transport_candidates(
         self,
@@ -874,12 +898,30 @@ class BaseProvider(ABC):
     ) -> tuple[str, ...]:
         """Return bindings that may serve one ingress protocol.
 
-        Most providers allow the dispatcher to try every declared transport.
-        Providers with a stricter wire contract can narrow the set without
-        pretending that an otherwise supported endpoint does not exist.
+        The shared policy chooses protocol candidates independently of model
+        availability. Providers may further narrow their declared transports
+        without pretending that an otherwise supported endpoint does not exist.
         """
-        del ingress_protocol
-        return tuple(binding.id for binding in self.bindings())
+        protocols = self.transport_policy.protocols(ingress_protocol)
+        return tuple(binding.id for binding in self.bindings() if binding.protocol in protocols)
+
+    @property
+    def transport_policy(self) -> TransportPolicy:
+        """Capability fallback by default; recovery requires a provider opt-in."""
+        from router_maestro.routing.transport_policy import (
+            DEFAULT_TRANSPORT_POLICY,
+            LEGACY_TRANSPORT_POLICY,
+        )
+
+        if any(binding.is_legacy for binding in self.bindings()):
+            return LEGACY_TRANSPORT_POLICY
+        return DEFAULT_TRANSPORT_POLICY
+
+    async def count_tokens(
+        self, protocol: WireProtocol, payload: Mapping[str, Any], *, model: str
+    ) -> int | None:
+        """Return an exact native count, or None to use the shared estimator."""
+        return None
 
     async def ensure_token(self) -> None:
         """Ensure the provider has a valid token.

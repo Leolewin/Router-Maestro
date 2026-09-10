@@ -185,6 +185,12 @@ class _RecordingExecutor:
 class _MatrixProvider(BaseProvider):
     name = _PROVIDER
 
+    @property
+    def transport_policy(self):
+        from router_maestro.routing.transport_policy import COMPATIBILITY_TRANSPORT_POLICY
+
+        return COMPATIBILITY_TRANSPORT_POLICY
+
     def __init__(self, target: WireProtocol) -> None:
         self.target = target
         self.dialect = _RecordingDialect(target)

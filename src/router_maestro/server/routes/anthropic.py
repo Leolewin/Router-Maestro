@@ -14,7 +14,6 @@ from fastapi.responses import JSONResponse
 
 from router_maestro.protocols import WireProtocol
 from router_maestro.providers import (
-    AnthropicProvider,
     ChatRequest,
     ChatStreamChunk,
     ProviderError,
@@ -28,7 +27,6 @@ from router_maestro.providers import (
     resolve_terminal_outcome,
     unexpected_eof_outcome,
 )
-from router_maestro.providers.deepseek import DeepSeekProvider
 from router_maestro.routing import Router, get_router
 from router_maestro.routing.capabilities import CapabilitySupport, Feature
 from router_maestro.routing.model_ref import catalog_model_public_id, qualify_model_id
@@ -66,10 +64,7 @@ from router_maestro.server.translation import translate_anthropic_to_openai
 from router_maestro.utils import count_anthropic_request_tokens, get_logger
 from router_maestro.utils.async_iterators import close_async_iterator
 from router_maestro.utils.context_window import resolve_thinking_budget
-from router_maestro.utils.token_config import (
-    count_tokens_via_anthropic_api,
-    get_config_for_provider,
-)
+from router_maestro.utils.token_config import get_config_for_provider
 
 logger = get_logger("server.routes.anthropic")
 
@@ -541,58 +536,24 @@ async def count_tokens(request: AnthropicCountTokensRequest):
     logger.debug("count_tokens resolved provider=%s for model=%s", provider_name, request.model)
     config = get_config_for_provider(provider_name)
 
-    # Native Anthropic and DeepSeek both expose /messages/count_tokens.
-    if provider_name in {"anthropic", "deepseek"}:
-        model_router = get_router()
-        provider = model_router.providers.get(provider_name)
-        if (
-            isinstance(provider, AnthropicProvider | DeepSeekProvider)
-            and provider.is_authenticated()
-        ):
-            try:
-                # Serialise messages/tools to plain dicts for the API call
-                msgs = [
-                    m if isinstance(m, dict) else m.model_dump(exclude_none=True)
-                    for m in request.messages
-                ]
-                system = request.system
-                if system is not None and not isinstance(system, str):
-                    system = [
-                        b if isinstance(b, dict) else b.model_dump(exclude_none=True)
-                        for b in system
-                    ]
-                tools_dicts = None
-                if request.tools:
-                    tools_dicts = [
-                        t if isinstance(t, dict) else t.model_dump(exclude_none=True)
-                        for t in request.tools
-                    ]
-                # Strip provider prefix from model name for upstream API
-                model_name = request.model
-                if "/" in model_name:
-                    model_name = model_name.split("/", 1)[1]
-
-                exact_tokens = await count_tokens_via_anthropic_api(
-                    base_url=(
-                        provider.anthropic_base_url
-                        if isinstance(provider, DeepSeekProvider)
-                        else provider.base_url
-                    ),
-                    api_key=provider._get_api_key(),
-                    model=model_name,
-                    messages=msgs,
-                    system=system,
-                    tools=tools_dicts,
-                )
+    model_router = get_router()
+    provider = model_router.providers.get(provider_name)
+    if provider is not None and provider.is_authenticated():
+        try:
+            exact_tokens = await provider.count_tokens(
+                WireProtocol.ANTHROPIC_MESSAGES,
+                request.model_dump(exclude_none=True),
+                model=request.model.split("/", 1)[-1],
+            )
+            if exact_tokens is not None:
                 return {"input_tokens": exact_tokens}
-            except Exception:
-                logger.warning(
-                    "%s upstream count_tokens failed for model=%s, "
-                    "falling back to local estimation",
-                    provider_name,
-                    request.model,
-                    exc_info=True,
-                )
+        except Exception:
+            logger.warning(
+                "%s upstream count_tokens failed for model=%s, falling back to local estimation",
+                provider_name,
+                request.model,
+                exc_info=True,
+            )
 
     input_tokens = count_anthropic_request_tokens(
         system=request.system,

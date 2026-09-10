@@ -103,11 +103,14 @@ def test_deepseek_bindings_are_protocol_native_and_gemini_is_chat_only() -> None
     ]
     assert provider.transport_candidates(WireProtocol.ANTHROPIC_MESSAGES) == (
         DEEPSEEK_ANTHROPIC_MESSAGES_BINDING,
+        DEEPSEEK_OPENAI_CHAT_BINDING,
+        DEEPSEEK_OPENAI_RESPONSES_BINDING,
     )
     assert provider.transport_candidates(WireProtocol.OPENAI_CHAT) == (
         DEEPSEEK_OPENAI_CHAT_BINDING,
     )
     assert provider.transport_candidates(WireProtocol.OPENAI_RESPONSES) == (
+        DEEPSEEK_OPENAI_CHAT_BINDING,
         DEEPSEEK_OPENAI_RESPONSES_BINDING,
     )
     assert provider.transport_candidates(WireProtocol.GEMINI) == (DEEPSEEK_OPENAI_CHAT_BINDING,)
@@ -130,7 +133,7 @@ def test_deepseek_bindings_are_protocol_native_and_gemini_is_chat_only() -> None
         (WireProtocol.GEMINI, DEEPSEEK_OPENAI_CHAT_BINDING, ConversionMode.SEMANTIC_IR),
     ],
 )
-def test_deepseek_handler_exposes_exactly_one_transport_per_ingress(
+def test_deepseek_handler_prefers_native_transport_per_ingress(
     ingress: WireProtocol,
     binding_id: str,
     mode: ConversionMode,
@@ -143,7 +146,6 @@ def test_deepseek_handler_exposes_exactly_one_transport_per_ingress(
         RequestManifest(protocol=ingress),
     )
 
-    assert len(plans) == 1
     assert plans[0].binding.id == binding_id
     assert plans[0].conversion_mode is mode
 
@@ -355,9 +357,8 @@ async def test_deepseek_anthropic_count_tokens_uses_native_exact_endpoint() -> N
             "get_router",
             return_value=SimpleNamespace(providers={"deepseek": provider}),
         ),
-        patch.object(
-            anthropic_route,
-            "count_tokens_via_anthropic_api",
+        patch(
+            "router_maestro.providers.deepseek.count_tokens_via_anthropic_api",
             return_value=7,
         ) as exact_count,
     ):

@@ -25,6 +25,7 @@ COPILOT_ANTHROPIC_MESSAGES_BINDING = "copilot-anthropic-messages"
 COPILOT_OPENAI_CHAT_BINDING = "copilot-openai-chat"
 COPILOT_OPENAI_RESPONSES_BINDING = "copilot-openai-responses"
 OPENAI_COMPATIBLE_CHAT_BINDING = "openai-compatible-chat"
+OPENAI_COMPATIBLE_RESPONSES_BINDING = "openai-compatible-responses"
 _EMPTY_STRING_MAPPING: Mapping[str, str] = MappingProxyType({})
 
 
@@ -174,6 +175,26 @@ class HttpExecutor(Protocol):
 
 
 @dataclass(frozen=True, slots=True)
+class ProtocolRuntimeOptions:
+    """Provider-declared deviations understood by the shared protocol codecs."""
+
+    allow_reasoning_opaque: bool = False
+    allow_per_event_response_ids: bool = False
+    defer_intermediate_item_ids: bool = False
+
+    def __post_init__(self) -> None:
+        if any(
+            not isinstance(value, bool)
+            for value in (
+                self.allow_reasoning_opaque,
+                self.allow_per_event_response_ids,
+                self.defer_intermediate_item_ids,
+            )
+        ):
+            raise TypeError("protocol runtime options must be booleans")
+
+
+@dataclass(frozen=True, slots=True)
 class EndpointBinding:
     """One provider endpoint bound to a wire protocol and transport hooks."""
 
@@ -182,9 +203,22 @@ class EndpointBinding:
     capabilities: ProviderCapabilities
     dialect: ProviderDialect | None = None
     executor: HttpExecutor | None = None
+    runtime_options: ProtocolRuntimeOptions = ProtocolRuntimeOptions()
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "id", _validated_identifier(self.id, label="binding ID"))
+        if not isinstance(self.runtime_options, ProtocolRuntimeOptions):
+            raise TypeError("binding runtime options must be ProtocolRuntimeOptions")
+        if (
+            self.runtime_options.allow_reasoning_opaque
+            and self.protocol is not WireProtocol.OPENAI_CHAT
+        ):
+            raise ValueError("opaque Chat reasoning requires a Chat binding")
+        if (
+            self.runtime_options.allow_per_event_response_ids
+            or self.runtime_options.defer_intermediate_item_ids
+        ) and self.protocol is not WireProtocol.OPENAI_RESPONSES:
+            raise ValueError("Responses ID options require a Responses binding")
         if (self.dialect is None) is not (self.executor is None):
             raise ValueError(
                 "binding dialect and executor must either both be set or both be omitted"

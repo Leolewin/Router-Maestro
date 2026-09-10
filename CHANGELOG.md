@@ -4,6 +4,38 @@ All notable changes to Router-Maestro are documented here.
 
 ---
 
+## Unreleased
+
+## v0.9.7 (2026-09-10)
+
+### Added
+
+- Explicit provider plugin registration shared by application startup, Router
+  generations, authentication discovery, and provider-owned HTTP endpoints.
+  DeepSeek Files now uses this extension contract, retaining existing paths and
+  adding `/api/providers/deepseek/v1/files` aliases.
+- Native Responses bindings for the built-in OpenAI provider; custom
+  OpenAI-compatible services opt in with `options.responses: true`.
+
+### Changed
+
+- Centralized default transport chains and separated capability fallback from
+  provider error recovery. Copilot retains explicit compatibility and recovery;
+  Gemini ingress now prefers Chat. DeepSeek permits capability-based fallback
+  without replaying failed native attempts. Model fallback remains independent.
+- Provider-declared codec options replace Copilot name checks in the runtime
+  factory. Standard Anthropic token counting now calls a provider capability,
+  and binding-only providers no longer need legacy Chat implementations.
+
+### Fixed
+
+- Plugin endpoints select error formats per HTTP method, reject route/provider
+  collisions, and hold the current Router generation until response completion.
+- Plugin route collision checks and CORS metrics resolve nested, prefix-aware
+  routes on both eager and lazy FastAPI router versions.
+- A failure while setting up request context now releases its already-acquired
+  Router lease instead of preventing generation shutdown.
+
 ## v0.9.6 (2026-09-09)
 
 ### Fixed

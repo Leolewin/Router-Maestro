@@ -3,6 +3,7 @@
 import asyncio
 
 import pytest
+from fastapi import APIRouter
 from fastapi.testclient import TestClient
 from prometheus_client.parser import text_string_to_metric_families
 from starlette.responses import StreamingResponse
@@ -287,15 +288,27 @@ def test_http_middleware_records_mid_stream_exception_as_500(monkeypatch):
     )
 
 
-def test_http_middleware_records_cors_preflight(monkeypatch):
+@pytest.mark.parametrize(
+    ("path", "template", "method"),
+    [
+        ("/api/openai/v1/chat/completions", "/api/openai/v1/chat/completions", "POST"),
+        ("/api/openai/v1/files/file-api-test", "/api/openai/v1/files/{file_id}", "GET"),
+        (
+            "/api/providers/deepseek/v1/files/file-api-test",
+            "/api/providers/deepseek/v1/files/{file_id}",
+            "DELETE",
+        ),
+    ],
+)
+def test_http_middleware_records_cors_preflight(monkeypatch, path, template, method):
     monkeypatch.delenv(METRICS_TOKEN_ENV, raising=False)
     client = TestClient(create_app())
 
     response = client.options(
-        "/api/openai/v1/chat/completions",
+        path,
         headers={
             "Origin": "https://example.com",
-            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Method": method,
         },
     )
     metrics_response = client.get("/metrics")
@@ -304,8 +317,34 @@ def test_http_middleware_records_cors_preflight(monkeypatch):
     assert response.headers[REQUEST_ID_HEADER]
     assert (
         'router_maestro_http_requests_total{method="OPTIONS",'
-        'path_template="/api/openai/v1/chat/completions",status="200"}' in metrics_response.text
+        f'path_template="{template}",status="200"}}' in metrics_response.text
     )
+
+
+def test_preflight_metrics_resolve_nested_hidden_routes(monkeypatch):
+    monkeypatch.delenv(METRICS_TOKEN_ENV, raising=False)
+    app = create_app()
+    parent = APIRouter()
+    child = APIRouter()
+
+    @child.get("/resources/{resource_id}", include_in_schema=False)
+    async def resource(resource_id: str):
+        return {"id": resource_id}
+
+    parent.include_router(child, prefix="/v1")
+    app.include_router(parent, prefix="/nested")
+    client = TestClient(app)
+    response = client.options(
+        "/nested/v1/resources/unique-resource",
+        headers={"Origin": "https://example.com", "Access-Control-Request-Method": "GET"},
+    )
+    assert response.status_code == 200
+    metrics = client.get("/metrics").text
+    assert (
+        'router_maestro_http_requests_total{method="OPTIONS",'
+        'path_template="/nested/v1/resources/{resource_id}",status="200"}' in metrics
+    )
+    assert "unique-resource" not in metrics
 
 
 def test_http_middleware_folds_unknown_method_label(monkeypatch):

@@ -48,6 +48,7 @@ from router_maestro.providers.bindings import (
     AttemptRequestContext,
     EndpointBinding,
     PreparedAttempt,
+    ProtocolRuntimeOptions,
 )
 from router_maestro.providers.copilot_support.auth_session import CopilotAuthSession
 from router_maestro.providers.copilot_support.catalog import CopilotCatalog
@@ -64,6 +65,7 @@ from router_maestro.providers.http_executor import SharedHttpExecutor
 from router_maestro.providers.outbound_contract import OutboundContract, ReasoningResolution
 from router_maestro.routing.capabilities import Operation, ProviderCapabilities
 from router_maestro.routing.model_ref import ModelRef
+from router_maestro.routing.transport_policy import TransportPolicy
 from router_maestro.utils import get_logger
 from router_maestro.utils.context_window import resolve_thinking_budget
 from router_maestro.utils.reasoning import (
@@ -1055,6 +1057,7 @@ class CopilotProvider(BaseProvider):
                 ),
                 dialect=dialect,
                 executor=executor,
+                runtime_options=ProtocolRuntimeOptions(allow_reasoning_opaque=True),
             ),
             EndpointBinding(
                 id=COPILOT_OPENAI_RESPONSES_BINDING,
@@ -1064,41 +1067,19 @@ class CopilotProvider(BaseProvider):
                 ),
                 dialect=dialect,
                 executor=executor,
+                runtime_options=ProtocolRuntimeOptions(
+                    allow_per_event_response_ids=True,
+                    defer_intermediate_item_ids=True,
+                ),
             ),
         )
         self._generation_bindings = bindings
         return bindings
 
-    def transport_preferences(
-        self,
-        ingress_protocol: WireProtocol | None = None,
-    ) -> tuple[str, ...]:
-        """Return Copilot's ingress-specific transport preference contract."""
-        preferences = {
-            WireProtocol.ANTHROPIC_MESSAGES: (
-                COPILOT_ANTHROPIC_MESSAGES_BINDING,
-                COPILOT_OPENAI_RESPONSES_BINDING,
-                COPILOT_OPENAI_CHAT_BINDING,
-            ),
-            WireProtocol.OPENAI_CHAT: (
-                COPILOT_OPENAI_CHAT_BINDING,
-                COPILOT_OPENAI_RESPONSES_BINDING,
-                COPILOT_ANTHROPIC_MESSAGES_BINDING,
-            ),
-            WireProtocol.OPENAI_RESPONSES: (
-                COPILOT_OPENAI_RESPONSES_BINDING,
-                COPILOT_OPENAI_CHAT_BINDING,
-                COPILOT_ANTHROPIC_MESSAGES_BINDING,
-            ),
-            WireProtocol.GEMINI: (
-                COPILOT_OPENAI_RESPONSES_BINDING,
-                COPILOT_OPENAI_CHAT_BINDING,
-                COPILOT_ANTHROPIC_MESSAGES_BINDING,
-            ),
-        }
-        if ingress_protocol is None:
-            return tuple(binding.id for binding in self.bindings())
-        return preferences.get(ingress_protocol, tuple(binding.id for binding in self.bindings()))
+    @property
+    def transport_policy(self) -> TransportPolicy:
+        """Retain Copilot's explicit cross-transport error recovery contract."""
+        return TransportPolicy(compatibility_transports=True, recover_retryable_errors=True)
 
     # Recycle the HTTP/2 client after this many seconds to avoid GOAWAY races
     _CLIENT_MAX_AGE = 300  # 5 minutes

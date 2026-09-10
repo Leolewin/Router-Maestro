@@ -159,7 +159,10 @@ def test_transient_retry_requires_explicit_5xx(output: str, expected: bool) -> N
     assert runner.is_explicit_transient_5xx(output) is expected
 
 
-def test_codex_command_uses_temporary_provider_and_catalog_without_secret(tmp_path: Path) -> None:
+@pytest.mark.parametrize("session_id", [None, "resume-session"])
+def test_codex_command_uses_temporary_provider_and_catalog_without_secret(
+    tmp_path: Path, session_id: str | None
+) -> None:
     catalog_path = tmp_path / "catalog.json"
     runtime = runner.Runtime(
         target=runner.TargetContext("hk", "https://rm.example", "sk-rm-secret-value"),
@@ -176,6 +179,7 @@ def test_codex_command_uses_temporary_provider_and_catalog_without_secret(tmp_pa
         "github-copilot/grok-4.6",
         "PROMPT",
         tmp_path / "last.txt",
+        session_id=session_id,
     )
     rendered = " ".join(command)
 
@@ -183,6 +187,16 @@ def test_codex_command_uses_temporary_provider_and_catalog_without_secret(tmp_pa
     assert "model_catalog_json" in rendered
     assert 'wire_api="responses"' in rendered
     assert "sk-rm-secret-value" not in rendered
+    assert "--skip-git-repo-check" in command
+    assert ("resume" in command) is (session_id is not None)
+
+
+def test_sanitized_warning_does_not_expose_opaque_item_identifiers() -> None:
+    opaque = "opaque-provider-id-value"
+    process = _process(f"WARN item completed without a recorded start timestamp item_id={opaque}")
+    diagnostic = runner.sanitize_process_output(process, secret=None)
+    assert opaque not in diagnostic
+    assert "item_id=[redacted]" in diagnostic
 
 
 def test_claude_command_uses_stream_deltas_and_safe_mode() -> None:

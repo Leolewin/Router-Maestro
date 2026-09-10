@@ -76,8 +76,9 @@ def provider_case(request: pytest.FixtureRequest) -> _ProviderCase:
 
 
 def _binding(provider: OpenAIChatProvider):
-    (binding,) = provider.bindings()
-    return binding
+    return next(
+        binding for binding in provider.bindings() if binding.protocol is WireProtocol.OPENAI_CHAT
+    )
 
 
 def _model(provider: OpenAIChatProvider) -> ModelRef:
@@ -140,7 +141,7 @@ def test_openai_chat_binding_is_protocol_native_cached_and_supports_both_operati
     provider = provider_case.provider
 
     bindings = provider.bindings()
-    (binding,) = bindings
+    binding = _binding(provider)
 
     assert bindings is provider.bindings()
     assert binding.id == OPENAI_COMPATIBLE_CHAT_BINDING

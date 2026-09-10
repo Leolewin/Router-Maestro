@@ -59,10 +59,10 @@ the same catalog through its native API surface.
 | Provider | Authentication | Upstream transports |
 | --- | --- | --- |
 | GitHub Copilot | OAuth device flow | Messages, Chat, Responses as advertised by each model |
-| OpenAI | API key | OpenAI-compatible transport |
+| OpenAI | API key | Chat Completions and native Responses |
 | Anthropic | API key | Anthropic Messages |
 | DeepSeek | API key | Native Messages, Chat, Responses, and Files; Gemini converts to Chat |
-| Custom OpenAI-compatible | API key, environment key, or explicit anonymous mode | Chat Completions |
+| Custom OpenAI-compatible | API key, environment key, or explicit anonymous mode | Chat Completions; optional native Responses |
 
 Unsupported cross-protocol fields fail explicitly before provider I/O rather
 than being silently dropped.
@@ -81,10 +81,13 @@ flowchart LR
     S --> U
 ```
 
-Provider handlers own their catalog, authentication, endpoint bindings,
-transport preference, and provider-specific contracts. Routing selects a model;
-the handler selects how to call it. Model fallback begins only after the
-selected model's viable transports are exhausted.
+Providers own their catalog, authentication, endpoint bindings, and provider
+contracts. A shared transport policy defines default protocol preferences;
+compatibility paths and failure recovery are explicit opt-ins. Routing selects
+a model; the handler selects how to call it. Model fallback is independent of
+transport fallback and runs only after an eligible upstream failure.
+The [Provider Plugins](docs/provider-plugins.md) registry also mounts provider
+resource endpoints such as Files without hardcoding them in the application.
 
 ## Five-Minute Local Start
 

@@ -653,7 +653,9 @@ class GenerationDispatcher:
                         failures.record_provider(error)
                         break
                     if failures.record_provider(error):
-                        continue
+                        if self._allows_transport_recovery(transport, error):
+                            continue
+                        break
                     raise
                 except BaseException:
                     self._record_attempt(
@@ -769,14 +771,17 @@ class GenerationDispatcher:
                             )
                 except StopAsyncIteration:
                     await close_async_iterator(iterator)
-                    failures.record_provider(self._empty_stream_error(transport))
+                    error = self._empty_stream_error(transport)
+                    failures.record_provider(error)
                     self._record_attempt(
                         envelope,
                         transport,
                         DispatchAttemptOutcome.RETRYABLE_FAILURE,
                         materialization_count_before=materialization_count_before,
                     )
-                    continue
+                    if self._allows_transport_recovery(transport, error):
+                        continue
+                    break
                 except ProtocolRepresentabilityError as error:
                     await close_async_iterator(iterator)
                     failures.record_representability(error)
@@ -823,7 +828,9 @@ class GenerationDispatcher:
                         failures.record_provider(error)
                         break
                     if failures.record_provider(error):
-                        continue
+                        if self._allows_transport_recovery(transport, error):
+                            continue
+                        break
                     raise
                 except BaseException:
                     await close_async_iterator(iterator)
@@ -868,6 +875,13 @@ class GenerationDispatcher:
             envelope,
             prefer_context_overflow=route.fallback_on_context_overflow_only,
         )
+
+    @staticmethod
+    def _allows_transport_recovery(transport: TransportPlan, error: ProviderError) -> bool:
+        policy = transport.provider.transport_policy
+        if error.retryable:
+            return policy.recover_retryable_errors
+        return policy.recover_request_rejections
 
     def _record_attempt(
         self,

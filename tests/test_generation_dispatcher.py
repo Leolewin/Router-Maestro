@@ -41,6 +41,7 @@ from router_maestro.providers.bindings import (
 from router_maestro.routing.capabilities import Feature, Operation, ProviderCapabilities
 from router_maestro.routing.model_ref import ModelRef
 from router_maestro.routing.router import CACHE_TTL_SECONDS, Router
+from router_maestro.routing.transport_policy import TransportPolicy
 from router_maestro.runtime import request_context as request_context_module
 from router_maestro.runtime.reasoning_capsule import (
     ReasoningCapsuleCodec,
@@ -107,6 +108,114 @@ class _Provider(BaseProvider):
 
     def bindings(self) -> tuple[EndpointBinding, ...]:
         return self._bindings
+
+
+class _PolicyProvider(_Provider):
+    @property
+    def transport_policy(self) -> TransportPolicy:
+        return TransportPolicy(compatibility_transports=True)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("stream", [False, True])
+@pytest.mark.parametrize("model_fallback", [False, True])
+async def test_retryable_failure_does_not_imply_transport_recovery(stream, model_fallback):
+    responses = _binding(WireProtocol.OPENAI_RESPONSES, "responses")
+    chat = _binding(WireProtocol.OPENAI_CHAT, "chat")
+    primary = _PolicyProvider("primary", "one", (responses, chat))
+    fallback = _PolicyProvider("fallback", "two", (responses,))
+    providers = (primary, fallback) if model_fallback else (primary,)
+    router = _router(providers, max_retries=int(model_fallback))
+    error = _retryable("Responses failed")
+    fallback_stream = _Stream(["ok"])
+    execution = _Execution(
+        actions={("primary", "responses"): error, ("fallback", "responses"): "ok"},
+        streams={("primary", "responses"): error, ("fallback", "responses"): fallback_stream},
+    )
+    envelope = RequestEnvelope(
+        _Runtime(WireProtocol.OPENAI_RESPONSES),
+        {"model": "router-maestro", "input": "hello", "stream": stream},
+    )
+    dispatcher = GenerationDispatcher({}, execution=execution)
+
+    async def dispatch():
+        if stream:
+            opened = await dispatcher.dispatch_stream(router, envelope)
+            assert await anext(opened.frames) == "ok"
+            await close_async_iterator(opened.frames)
+            return opened.selection.plan
+        result = await dispatcher.dispatch(router, envelope)
+        assert result.value == "ok"
+        return result.selection.plan
+
+    if model_fallback:
+        assert (await dispatch()).provider is fallback
+    else:
+        with pytest.raises(ProviderError, match="Responses failed"):
+            await dispatch()
+    calls = execution.stream_calls if stream else execution.calls
+    assert [(provider, binding) for provider, binding, _ in calls] == (
+        [("primary", "responses"), ("fallback", "responses")]
+        if model_fallback
+        else [("primary", "responses")]
+    )
+    assert envelope.materialization_count == 0
+
+
+@pytest.mark.asyncio
+async def test_empty_stream_obeys_transport_error_recovery_policy():
+    provider = _PolicyProvider(
+        "alpha",
+        "one",
+        (
+            _binding(WireProtocol.OPENAI_RESPONSES, "responses"),
+            _binding(WireProtocol.OPENAI_CHAT, "chat"),
+        ),
+    )
+    empty = _Stream([])
+    execution = _Execution(streams={("alpha", "responses"): empty})
+    envelope = RequestEnvelope(
+        _Runtime(WireProtocol.OPENAI_RESPONSES),
+        {"model": "alpha/one", "input": "hello", "stream": True},
+    )
+    with pytest.raises(ProviderError):
+        await GenerationDispatcher({}, execution=execution).dispatch_stream(
+            _router((provider,), max_retries=0), envelope
+        )
+    assert len(execution.stream_calls) == 1
+    assert empty.closed
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("stream", [False, True])
+async def test_unimplemented_operation_still_uses_capability_fallback(stream):
+    responses = _binding(WireProtocol.OPENAI_RESPONSES, "responses")
+    chat = _binding(WireProtocol.OPENAI_CHAT, "chat")
+    provider = _PolicyProvider("alpha", "one", (responses, chat))
+    unsupported = ProviderError(
+        "Unsupported Responses", status_code=501, kind=ProviderFailureKind.UNSUPPORTED_OPERATION
+    )
+    execution = _Execution(
+        actions={("alpha", "responses"): unsupported, ("alpha", "chat"): "ok"},
+        streams={("alpha", "responses"): unsupported, ("alpha", "chat"): _Stream(["ok"])},
+    )
+    envelope = RequestEnvelope(
+        _Runtime(WireProtocol.OPENAI_RESPONSES),
+        {"model": "alpha/one", "input": "hello", "stream": stream},
+    )
+    dispatcher = GenerationDispatcher(
+        {WireProtocol.OPENAI_CHAT: _Runtime(WireProtocol.OPENAI_CHAT)}, execution=execution
+    )
+    if stream:
+        opened = await dispatcher.dispatch_stream(_router((provider,), max_retries=0), envelope)
+        assert await anext(opened.frames) == "ok"
+        await close_async_iterator(opened.frames)
+    else:
+        assert (
+            await dispatcher.dispatch(_router((provider,), max_retries=0), envelope)
+        ).value == "ok"
+    calls = execution.stream_calls if stream else execution.calls
+    assert [binding for _, binding, _ in calls] == ["responses", "chat"]
 
 
 def _router(

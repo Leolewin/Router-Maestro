@@ -778,7 +778,7 @@ def test_stream_postcommit_failure_is_normalized_once_and_never_replays(tmp_path
             "gemini",
             "/api/gemini/v1beta/models/github-copilot/eof-model:streamGenerateContent",
             {"contents": [{"role": "user", "parts": [{"text": "ping"}]}]},
-            "/responses",
+            "/chat/completions",
         ),
     ],
 )

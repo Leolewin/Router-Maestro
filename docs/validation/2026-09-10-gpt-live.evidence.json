@@ -1,0 +1,3495 @@
+{
+  "date": "2026-09-10",
+  "scope": "GitHub Copilot GPT only; no DeepSeek model requests",
+  "instance": {
+    "kind": "isolated loopback source instance, not a deployed image",
+    "endpoint": "http://127.0.0.1:64120",
+    "version": "0.9.6",
+    "base_commit": "5d191de2b1ca82b49e4b3fdf8bae39a53fa8a512",
+    "branch": "users/kanwli/provider-plugin-boundaries",
+    "uncommitted_changes": true,
+    "source_sha256": "c390df2b1c7bff73f4163110df98358b5403c6b7b7ba9eef7c9ebb71ee324e8b",
+    "source_unchanged_during_live": true
+  },
+  "client_versions": {
+    "claude": "2.1.266",
+    "codex": "0.153.4"
+  },
+  "final_matrix": {
+    "passed": 40,
+    "failed": 0,
+    "total": 40,
+    "cases": [
+      {
+        "client": "claude",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-5-mini",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 16.091164167039096,
+        "detail": "exact match"
+      },
+      {
+        "client": "claude",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-5.3-codex",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 1.7342302498873323,
+        "detail": "exact match"
+      },
+      {
+        "client": "claude",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-5.4",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 1.8532036249525845,
+        "detail": "exact match"
+      },
+      {
+        "client": "claude",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-5.4-mini",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 1.6855678330175579,
+        "detail": "exact match"
+      },
+      {
+        "client": "claude",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-5.5",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 1.355196958873421,
+        "detail": "exact match"
+      },
+      {
+        "client": "claude",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-5.6-luna",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 1.899470791919157,
+        "detail": "exact match"
+      },
+      {
+        "client": "claude",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-5.6-sol",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 1.6235180001240224,
+        "detail": "exact match"
+      },
+      {
+        "client": "claude",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-5.6-sol-fast",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 1.6169709581881762,
+        "detail": "exact match"
+      },
+      {
+        "client": "claude",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-5.6-terra",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 3.030530208023265,
+        "detail": "exact match"
+      },
+      {
+        "client": "claude",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-6-astra",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 2.1109522089827806,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-5-mini",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 6.4557212081272155,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-5.3-codex",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 2.9423347918782383,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-5.4",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 2.7296732501126826,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-5.4-mini",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 2.6189843751490116,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-5.5",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 2.8192817082162946,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-5.6-luna",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 2.37928166706115,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-5.6-sol",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 3.6876211671624333,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-5.6-sol-fast",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 2.667421249905601,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-5.6-terra",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 2.3571057089138776,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "smoke",
+        "model": "github-copilot/gpt-6-astra",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 2.7860933751799166,
+        "detail": "exact match"
+      },
+      {
+        "client": "claude",
+        "phase": "recall",
+        "model": "github-copilot/gpt-5-mini",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 32.34289462515153,
+        "detail": "exact match"
+      },
+      {
+        "client": "claude",
+        "phase": "recall",
+        "model": "github-copilot/gpt-5.3-codex",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 6.523483958095312,
+        "detail": "exact match"
+      },
+      {
+        "client": "claude",
+        "phase": "recall",
+        "model": "github-copilot/gpt-5.4",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 4.665064624976367,
+        "detail": "exact match"
+      },
+      {
+        "client": "claude",
+        "phase": "recall",
+        "model": "github-copilot/gpt-5.4-mini",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 3.0602297498844564,
+        "detail": "exact match"
+      },
+      {
+        "client": "claude",
+        "phase": "recall",
+        "model": "github-copilot/gpt-5.5",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 3.6139938340056688,
+        "detail": "exact match"
+      },
+      {
+        "client": "claude",
+        "phase": "recall",
+        "model": "github-copilot/gpt-5.6-luna",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 3.232920541893691,
+        "detail": "exact match"
+      },
+      {
+        "client": "claude",
+        "phase": "recall",
+        "model": "github-copilot/gpt-5.6-sol",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 3.5483949999324977,
+        "detail": "exact match"
+      },
+      {
+        "client": "claude",
+        "phase": "recall",
+        "model": "github-copilot/gpt-5.6-sol-fast",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 3.3540169580373913,
+        "detail": "exact match"
+      },
+      {
+        "client": "claude",
+        "phase": "recall",
+        "model": "github-copilot/gpt-5.6-terra",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 3.819953375030309,
+        "detail": "exact match"
+      },
+      {
+        "client": "claude",
+        "phase": "recall",
+        "model": "github-copilot/gpt-6-astra",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 4.404198333853856,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "recall",
+        "model": "github-copilot/gpt-5-mini",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 9.703678333899006,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "recall",
+        "model": "github-copilot/gpt-5.3-codex",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 5.717399416957051,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "recall",
+        "model": "github-copilot/gpt-5.4",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 5.322828833013773,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "recall",
+        "model": "github-copilot/gpt-5.4-mini",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 4.672847584122792,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "recall",
+        "model": "github-copilot/gpt-5.5",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 5.610810749931261,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "recall",
+        "model": "github-copilot/gpt-5.6-luna",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 4.296173665905371,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "recall",
+        "model": "github-copilot/gpt-5.6-sol",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 5.957724999869242,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "recall",
+        "model": "github-copilot/gpt-5.6-sol-fast",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 4.9629053748212755,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "recall",
+        "model": "github-copilot/gpt-5.6-terra",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 5.34528866619803,
+        "detail": "exact match"
+      },
+      {
+        "client": "codex",
+        "phase": "recall",
+        "model": "github-copilot/gpt-6-astra",
+        "provider": "github-copilot",
+        "passed": true,
+        "attempts": 1,
+        "duration_seconds": 7.365937458118424,
+        "detail": "exact match"
+      }
+    ]
+  },
+  "initial_runner_failure": {
+    "count": 10,
+    "client": "codex",
+    "phase": "recall",
+    "reason": "resume omitted --skip-git-repo-check in isolated non-git working directory; no second request sent",
+    "fixed_and_retested": true
+  },
+  "interactive": {
+    "claude": {
+      "model": "github-copilot/gpt-5.6-luna",
+      "five_rounds_exact": true,
+      "rounds": [
+        {
+          "round": 1,
+          "passed": true
+        },
+        {
+          "round": 2,
+          "passed": true
+        },
+        {
+          "round": 3,
+          "passed": true
+        },
+        {
+          "round": 4,
+          "passed": true
+        },
+        {
+          "round": 5,
+          "passed": true
+        }
+      ],
+      "observed_tool_names": [
+        "Bash",
+        "mcp__qmd__status"
+      ],
+      "file_absent": true,
+      "completed_turn_events": null,
+      "exit_code": 0
+    },
+    "codex": {
+      "model": "github-copilot/gpt-5.6-luna",
+      "five_rounds_exact": true,
+      "rounds": [
+        {
+          "round": 1,
+          "passed": true
+        },
+        {
+          "round": 2,
+          "passed": true
+        },
+        {
+          "round": 3,
+          "passed": true
+        },
+        {
+          "round": 4,
+          "passed": true
+        },
+        {
+          "round": 5,
+          "passed": true
+        }
+      ],
+      "observed_tool_names": [
+        "exec_command",
+        "status"
+      ],
+      "file_absent": true,
+      "completed_turn_events": 5,
+      "exit_code": 0
+    }
+  },
+  "audit": {
+    "http_counts": {
+      "200": 107,
+      "400": 52
+    },
+    "attempt_count": 107,
+    "all_attempts_selected": true,
+    "all_attempts_gpt": true,
+    "requests": [
+      {
+        "request_id": "03cea06f054f49bcb4b818f4ea70f646",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": "claude",
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "05136255156e4144a398715a8180012b",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "0513ccb6e4904a4abf4a49c04d265f04",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.4",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "059b237cb5f04f229b8a3bc60c02ce97",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5-mini",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "05c07060cc9a4c709ee1a10bc444cc01",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-terra",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-terra",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "0805e8116e244c80ad689245bf2eb6c9",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.4",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.4",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "082dbec8997c49b1951493dec4d04137",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.5",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.5",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "0cbeb1432e9643ad86fb9f78964d41f5",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.5",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.5",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "0e413a584376454f9c4a1ee22a67ed2b",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "0eca61f8384e4077a81649df8c02dc96",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": "codex",
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "11a3901a4e364f6f98f956f595f0391d",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "12962b88979c44e881c5585cbec1fbc6",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "12ce100e6480443bb5bd60c7f99e1be4",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5-mini",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "12d20f6667cc4e448073320622e7b5b2",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.5",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "15e2c2825ce044cb9fa95741869ef624",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": "codex",
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "16e8f60f73d8401ca6bdcd9536f0ab61",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5-mini",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5-mini",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "19146191cb7148bcaf35789368ceb999",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-terra",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-terra",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "217efa90abce4a7aa3e1a0dcb3c01106",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4-mini",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "24520890438d41a786eb89fa16d5074f",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol-fast",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "282d15dd82a549bda24cbf8e3987816c",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "286886401ee840efbc9b206f54e3e7e2",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": "codex",
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "2bc658fde5a34ad38a69efc9a68a648f",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.3-codex",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "2be4277a3dec4d23aa10fe17308f5339",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": "codex",
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "2e70acd481c5430c833e0ba5ec2c29d3",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.5",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "2f0f94d9718b4ca6a5a4ff8770262710",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.4",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.4",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "2f2c3a6f5b354a9797846ebfd09b0c72",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol-fast",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-sol-fast",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "31b6b85d8b2048de890788184feef5b8",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-6-astra",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-6-astra",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "31ca9263d6c14f1f98fd929d503a6eca",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": "claude",
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "355665dcb7a44b35b9f340a2e4bc8155",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5-mini",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5-mini",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "36b40370d2ed4fbd89d2ecc61522534f",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.3-codex",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "37ae09079f1c4e4da0b7e4772683b2c9",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-6-astra",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-6-astra",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "381175a4df194ab0a8d4401fb6ffeeeb",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5-mini",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5-mini",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "3ee36d1d0da242e4b4f585ec8c0d739d",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.5",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.5",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "3eee85c476ce4581899b56ef8935c39a",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": "claude",
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "4084f8d3f60e4a9096a03061072590cd",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "40a5aa4fd17846bdaba7262f1b9e3f43",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-sol",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "416d693bf1a64b3b86eec36b9a116da6",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-terra",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-terra",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "43c187f177f64d0faefb7c682084a9af",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": "codex",
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "482779a84c2e4bd08d3fa163e7c2edbd",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-6-astra",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-6-astra",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "491e023621e04168a646a37b9e9efea7",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "495e87c3868a4e969a3aad8731d0e17a",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5-mini",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5-mini",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "49a24330acb0424ab6461fc54e955c0f",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.4",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "4b07be3f45034ad19e71166cf3313c7b",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": "claude",
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "4b826d9ad91043bdbaa0be4da7c424e7",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.5",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.5",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "4e17c08072e84f4cb33f4e329b561f73",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": "codex",
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "506573b7ee8849dd88d0d5ef3ea31ad0",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-sol",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-sol",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "53124f5b8e5c406797dc0b6156c8fdba",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-terra",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "5391e52070794c0fbf49b12f58e9da6e",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5-mini",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "53cbf45d2a094d69a7d933ec96063625",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "53fb6fd9d2084d458bb22601e575ae7a",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.5",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "55ea4655e9064f4289b24a5b92a51ee4",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-6-astra",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-6-astra",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "59bd08af307241db82103fe58b1f2d6a",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.3-codex",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.3-codex",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "5cae1394133a4910bdf677a646020f11",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-6-astra",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "5caff1e612db45e7af38ca2a458a7b95",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol-fast",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "5da3fd0a76f34083a0b67314fca93905",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-sol",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "5dc9e628ce8a406c92927db4cf403bfd",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-terra",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "5e3952f1dee54ca9b633c023ff553357",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.4",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "63e672501486431d9d2309019fe34530",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.4",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "641fdd28a01c4443a61b3de96c50cb1f",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.3-codex",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.3-codex",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "67fdad1cc6884d029389b74cc6f63eaa",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": "claude",
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "6843d66b2a064c598cb1ca25ee1d6774",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.4-mini",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.4-mini",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "6baaab603c674af0806857356b83fb74",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-sol-fast",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-sol-fast",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "6c6d231be00f40e3ba27410d9abfd113",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4-mini",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.4-mini",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "6c6e5c696dea4848ad987adba5d2f1e9",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "6c9459271bed4473945d18e5c3bedd3c",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4-mini",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "6c9d8ff041ba48f38751c0bd5c9b78a6",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-terra",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "6d649edf873b4d40a5c9fcb0d7016fbf",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4-mini",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "6f91689223ce4bb591783c6739b0fcc7",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-6-astra",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "768748bf2edd41e2a35ce79b257a07c2",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-sol-fast",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-sol-fast",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "777104af953445bb851914dc4f11fce2",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.3-codex",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.3-codex",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "77d0de5cc90e49e5a60374a15c8d7ec0",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "77d8fb3190764175a0ef60cc25e8f81d",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5-mini",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "7915a4206f28491291934223b53e7583",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-6-astra",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-6-astra",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "7965632995a34f23b14a2459de94f437",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.3-codex",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "7998f0adf72b4909a249863d2145fe51",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.4",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.4",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "7a753879e26f494f962150fc2f4e080f",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4-mini",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "7bf839363249402bb2925097186fdd05",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-6-astra",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-6-astra",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "7d0f09d12bf944738e06ddc058d4c0c0",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4-mini",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.4-mini",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "82b1d148022847cc95c8fbd4d9d4f716",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5-mini",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5-mini",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "864209aaeb46487989f6214ba7f0643e",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4-mini",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.4-mini",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "86d4c3f05a5246bfa2b4334e1f9cadd2",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-6-astra",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-6-astra",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "891031f1967e4facb2bf90f72e847976",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4-mini",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.4-mini",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "8935213483ab43bbb5d3ec18974f8ba4",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5-mini",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5-mini",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "90724578377045a7bd362b60ed0553df",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "908a7450d9bb447db38384c4328c1277",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "91a49504a12c4cf7b5ac5ff7f17243a7",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-terra",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-terra",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "91de53cfc2444995b07e58fa9b05f24f",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-sol",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "9381b0dff14f424999ffb290f09525c7",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "99faa2676a7c4963a0daf014c91046e1",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "9af6051548304d9d877ac9941e958ba3",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-terra",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-terra",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "9c7538e69ac24e238c37fc810a8e04dc",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol-fast",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-sol-fast",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "RMGPTBETACHECK21d1c327f80b7824",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "RMGPTBETAINLINE9f992d6ec72c94a0",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "RMGPTTERMINAL470d3b6e7c4e1ef1",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "RMGPTTERMINALb8e05acf94bccf26",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "a00a93d720e84745b6e58293718f49c1",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-6-astra",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "a1383bb5f4b04dc49ab7d8488f36e6fa",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.3-codex",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "a189d9c4463e4105a12a50af10255a13",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-6-astra",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-6-astra",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "a551f97fabe94917a26239da9a18985e",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "a5abab8397304f26a25c2b065675dc1b",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.5",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "a70fed90c90a4a1e94fb42369a631bfc",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "a958baebcaa44ee2a9933744f026a0c4",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-6-astra",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-6-astra",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "a9c40134508e49f3a4516ecbe1abe6d3",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4-mini",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "a9e5e3e2644e4d3fbed872aa4d4bf703",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol-fast",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-sol-fast",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "a9f3fed023894d2996759a5c985e325c",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": "claude",
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "aa71ab0771524574a76eae59bc4b576f",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol-fast",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-sol-fast",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "ac70879d6ec349f0a7bae896adc8fa07",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "ac7634cf7834475b9ab79beac45a9fa4",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.3-codex",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.3-codex",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "b0ba6b97077743b0b9c93d735d041a9a",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5-mini",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5-mini",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "b1769f3f36a94e7eb0a38deaf60b4199",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "b1fbdbfa022240048274be3efbd9e41b",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-sol-fast",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-sol-fast",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "b3b51aaf409b4504bc60cdfe09f55abc",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "b478388fa1d6405cb05b547fed9c6deb",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-sol",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-sol",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "b62d101778914d9ca3cd5b210e4c4c01",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.4-mini",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.4-mini",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "b6c7969c16f247b6b65ed0c063a500c7",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.5",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.5",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "b84933bdbacb466db5895af15784e030",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-terra",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "b8836f4dcecd4abda24513d91ba0b2e1",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": "codex",
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "bd60ae96b1fd4b2ea43182ed6c6e7b03",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5-mini",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5-mini",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "bdb1b5173aef46a997ea3acf317640fb",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-sol",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-sol",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "be673a691e784e18bc0cd625caca2953",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.3-codex",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "c0267df0036148aa8a1c874c470d3134",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.3-codex",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.3-codex",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "c0c31f7beb8f4fd28a28a7d96d9c9070",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.3-codex",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.3-codex",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "c23b2b3a01db499fa1cb72f15e398b8e",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.4",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "c2cc785dbc374422bcf599f5389fc729",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol-fast",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "c4641303ff21482b83d30efe6dc03915",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-6-astra",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "c61e77bc535041ecb88e3ebfceca17b7",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol-fast",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "c75689dcab974f2295cfb9c1bff53e26",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "d03721b8eaf94220b910bb3f9db04047",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol-fast",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-sol-fast",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "d066c35d7bb14255892f028ddf153451",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-terra",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "d1fcff7fddbe466f8bdaac77b185a927",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.3-codex",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.3-codex",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "d5621688c8074f06b610794ea28c6b40",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "d76239b864c24e3c889158499f9440ec",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-terra",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-terra",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "d849d868468e40f7b8f89b5262bf0da9",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-6-astra",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "d84c84513f8f42fbbcd791c2120bd781",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-terra",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-terra",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "dab5d66652484084bb266850a72208ae",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol-fast",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "dc29aa1796ee41459fecc61d5ba5c9d8",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.4-mini",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.4-mini",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "dc87ea60a84148c3a6ecc23ded17aed2",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.5",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.5",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "deb2e7b31d74423aba2eb609456960de",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": "claude",
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "e130cd11649d4f628fb9b7ee81965d42",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.3-codex",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.3-codex",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "e14f6a51e4bb4121a45b94e062be026b",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.5",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.5",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "e256bd9168b64be887fe74f99b0d2474",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.3-codex",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.3-codex",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "e2ecdcdfec84455d984f086b1eaba53c",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.5",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "e775d34ddb00422b99dd50f203232032",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.4-mini",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.4-mini",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "e9e33d2e29c0450b8f331461eb60e68a",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-sol-fast",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-sol-fast",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "f202186240e24ae79989edad6137ac8a",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "f26b04c08e43472ab34fe367192dd441",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-sol",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "f2ccd14f1b5541119c64d14ee84ed67e",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5-mini",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5-mini",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "f339eb14db7a4025bc5afd7739bdca97",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "f67e2f3f160049caa0afa748ba95cbbb",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4-mini",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.4-mini",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "f82a0d5b24334d2fb80e00c55ff32e12",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.4",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "f83a6ca53ade45bfa47fb800ea72994d",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.5",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.5",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "f9ae5cc31e8d41d9a8771d95287f0a4c",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.4",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.4",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "fb24e6dba90f4b7394c23f8a3412ce85",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-terra",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-terra",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "fbc50b150ccd4264a1a08f5209ecc933",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-terra",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-terra",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "fc5d7791c9ed47e5903d68ee2a49a97e",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.5",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.5",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "fde352bb8e074a779d751ef880015614",
+        "path": "/api/openai/v1/responses",
+        "requested_model": "github-copilot/gpt-5.6-sol",
+        "http_status": 200,
+        "transport_termination": "client_cancelled",
+        "response_status": "cancelled",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-sol",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "openai_responses",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "identity",
+            "outcome": "selected",
+            "ir_materialized": false
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "fe19fae04fc34db08076373b8d75906c",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-luna",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-luna",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": "claude",
+        "beta_negotiation": false
+      },
+      {
+        "request_id": "fecd3f11e50b4cd09b01d061d10219d8",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5-mini",
+        "http_status": 400,
+        "transport_termination": "explicit_terminal",
+        "response_status": "failed",
+        "attempts": [],
+        "interactive_client": null,
+        "beta_negotiation": true
+      },
+      {
+        "request_id": "ff20078d8aea4079ac6ea92eed1ea27f",
+        "path": "/api/anthropic/v1/messages",
+        "requested_model": "github-copilot/gpt-5.6-sol",
+        "http_status": 200,
+        "transport_termination": "explicit_terminal",
+        "response_status": "completed",
+        "attempts": [
+          {
+            "provider": "github-copilot",
+            "model": "gpt-5.6-sol",
+            "binding": "copilot-openai-responses",
+            "entry_protocol": "anthropic_messages",
+            "upstream_transport": "openai_responses",
+            "conversion_mode": "semantic_ir",
+            "outcome": "selected",
+            "ir_materialized": true
+          }
+        ],
+        "interactive_client": null,
+        "beta_negotiation": false
+      }
+    ]
+  },
+  "warnings": {
+    "codex_fallback_metadata_count": 0,
+    "featured_plugin_401_attempts": 30,
+    "item_timestamp_warning_attempts": 30
+  },
+  "terminal_probes": [
+    {
+      "request_id": "RMGPTTERMINALb8e05acf94bccf26",
+      "close_on_terminal": false,
+      "terminal_received": true,
+      "terminal_status": "completed",
+      "text_exact": true,
+      "audit_termination": "explicit_terminal",
+      "audit_response_status": "completed"
+    },
+    {
+      "request_id": "RMGPTTERMINAL470d3b6e7c4e1ef1",
+      "close_on_terminal": true,
+      "terminal_received": true,
+      "terminal_status": "completed",
+      "text_exact": true,
+      "audit_termination": "client_cancelled",
+      "audit_response_status": "cancelled"
+    }
+  ],
+  "beta_probe": {
+    "request_id": "RMGPTBETAINLINE9f992d6ec72c94a0",
+    "status": 400,
+    "specific_beta_named": true,
+    "error_type": "invalid_request_error",
+    "upstream_attempts": 0
+  },
+  "offline": {
+    "pytest": {
+      "passed": 4067
+    },
+    "controlled_e2e": {
+      "passed": 25
+    },
+    "ruff": "passed",
+    "format": "passed",
+    "basedpyright": {
+      "version": "1.39.10",
+      "errors": 0,
+      "warnings": 0
+    },
+    "skill_validation": "passed"
+  },
+  "remaining_observation": "Early client close after a valid response.completed is classified client_cancelled/cancelled in server audit. Reproduced with exact text and completed terminal; client behavior passes, audit classification remains imperfect.",
+  "cleanup": {
+    "test_server_stopped": true,
+    "both_clients_exited": true,
+    "loopback_port_released": true,
+    "probe_files_absent": true,
+    "scratch_directory": "Moved to macOS Trash; recoverable, including temporary credential copies and raw client state",
+    "persistent_client_configuration_changed": false,
+    "remote_deployment_changed": false
+  }
+}
