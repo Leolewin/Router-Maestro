@@ -353,8 +353,8 @@ async def test_public_model_lists_expose_supported_context_windows():
 @pytest.mark.anyio
 async def test_public_model_lists_keep_total_context_separate_from_derived_prompt_budget():
     info = ModelInfo(
-        id="deepseek-v4-flash",
-        name="DeepSeek-V4-Flash",
+        id="deepseek-flash",
+        name="DeepSeek-V4.1-Flash",
         provider="deepseek",
         max_output_tokens=384_000,
         max_context_window_tokens=1_000_000,

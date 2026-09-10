@@ -4,7 +4,23 @@ All notable changes to Router-Maestro are documented here.
 
 ---
 
-## Unreleased
+## v0.9.8 (2026-09-10)
+
+### Changed
+
+- **DeepSeek model discovery follows the V4.1 catalog.** `deepseek-flash` is
+  advertised as multimodal DeepSeek-V4.1-Flash with its documented 1M total
+  context and 384K maximum output. Retired `deepseek-v4-flash` and
+  `deepseek-v4-flash-vision-exp` IDs remain accepted as hidden compatibility
+  aliases that route to the canonical model.
+
+### Fixed
+
+- **DeepSeek context overflow is exposed as a safe structured signal.** Exact,
+  bounded upstream context-limit errors become `context_length_exceeded` with
+  `X-Router-Maestro-Error-Signal: context_window_exceeded`, allowing DSH Web to
+  compact and retry instead of treating the response as an ordinary 400. The
+  upstream token counts and request contents remain private.
 
 ## v0.9.7 (2026-09-10)
 

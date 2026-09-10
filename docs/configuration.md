@@ -302,19 +302,29 @@ Then edit DSH's `DeepSeek` (`deepseek-official`) provider and set:
 ```text
 API key:  <the Router-Maestro server API key, not the DeepSeek key>
 Base URL: https://<router-maestro-host>/api/openai/v1
-Models:   deepseek-v4-flash
+Models:   deepseek-flash
           deepseek-v4-pro
-          deepseek-v4-flash-vision-exp
 ```
 
-DSH appends `/chat/completions` to that Base URL. Router-Maestro pins these
-three bare official IDs to its `deepseek` provider, replaces the downstream
-authorization header with the server-side DeepSeek credential, and preserves
-DeepSeek-specific Chat fields such as `reasoning_content`, `thinking`, and
-future extension fields. The provider catalog also exposes the unambiguous
-`deepseek/<model>` form to other clients. The Anthropic-compatible
+`deepseek-flash` is the canonical API ID for multimodal DeepSeek-V4.1-Flash.
+The retired `deepseek-v4-flash` and `deepseek-v4-flash-vision-exp` IDs remain
+accepted as compatibility aliases and route to `deepseek-flash`, but are not
+listed as current models. DSH appends `/chat/completions` to the Base URL.
+Router-Maestro pins these official bare IDs to its `deepseek` provider,
+replaces the downstream authorization header with the server-side DeepSeek
+credential, and preserves DeepSeek-specific Chat fields such as
+`reasoning_content`, `thinking`, and future extension fields. The provider
+catalog also exposes the unambiguous `deepseek/<model>` form to other clients.
+The Anthropic-compatible
 `/messages/count_tokens` route also calls DeepSeek's native exact-count endpoint
 and falls back to local estimation only if that upstream helper is unavailable.
+
+When DeepSeek rejects a request for exceeding the model context window,
+Router-Maestro returns a safe `context_length_exceeded` error and the
+`X-Router-Maestro-Error-Signal: context_window_exceeded` header. The provider's
+request-specific token counts are not copied downstream. DSH uses the
+structured classification to run its context-overflow compaction and retry
+flow.
 
 The same Base URL exposes DeepSeek's OpenAI-compatible Files API at
 `/api/openai/v1/files`. DSH can upload a vision image, reuse its `file-api-*`
